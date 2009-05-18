@@ -1,7 +1,7 @@
 <?php
 class AdvindexHelper extends AppHelper {
 
-	var $helpers = array('Uniform.Uniform', 'Html', 'Paginator');
+	var $helpers = array('Uniform.Uniform', 'Html', 'Paginator', 'Form', 'Session');
 
 	/**
 	* @var FormHelper
@@ -97,6 +97,48 @@ class AdvindexHelper extends AppHelper {
 		}
 
 		return $this->Html->link($label, $url);
+	}
+
+	function import($model, $options = array())
+	{
+		$out = '';
+
+		$sessionKey = 'Advindex.' . $model . '.import';
+		$import = $this->Session->read($sessionKey);
+
+		if ( $import ) {
+			$out .= '<div class="message"><p>Results of your import:</p><ul>';
+			$out .= '<li>' . $import['created'] . ' ' . __n('record', 'records', $import['created'], true) . ' created</li>';
+			$out .= '<li>' . $import['updated'] . ' ' . __n('record', 'records', $import['updated'], true) . ' updated</li>';
+			if ( $import['errors'] ) {
+				$errorsCount = count($import['errors']);
+				$out .= '<li>' . $errorsCount . ' ' . __n('error', 'errors', $errorsCount, true) . ' occured: </li>';
+				$out .= '<ul>';
+				foreach ($import['errors'] as $line => $whys) {
+					$out .= '<li>Line ' . $line . '<ul>';
+					foreach ($whys as $why) {
+						$out .= '<li>' . $why . '</li>';
+					}
+					$out .= '</ul></li>';
+				}
+				$out .= '</ul></li>';
+			}
+			$out .= '</ul></div>';
+
+			// clear session out.
+			$this->Session->del($sessionKey);
+		}
+
+		$default_options = array(
+			'action' => 'import',
+			'type' => 'file'
+		);
+		$out .= $this->Form->create($model, array_merge($default_options, $options));
+		$truncate = $this->Form->input('truncate', array('div' => false, 'label' => 'Empty table before import?', 'type' => 'checkbox'));
+		$submit = $this->Form->submit('Upload', array('div' => false, 'label' => false));
+		$out .= $this->Form->input('csv', array('type' => 'file', 'after' => $truncate . $submit, 'label' => false));
+		$out .= $this->Form->end();
+		return $out;
 	}
 
 	function perPage() {
