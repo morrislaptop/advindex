@@ -124,7 +124,7 @@ class AdvindexComponent extends Object {
 		foreach ($csv->data as $line => $row) {
 			$modelData = array();
 			foreach ($row as $field => $val) {
-				$modelData[$fields[$field]] = $val;
+				$modelData[$fields[$field]] = trim($val);
 			}
 
 			$model->create();
@@ -137,7 +137,7 @@ class AdvindexComponent extends Object {
 				$conditions[$field] = $modelData[$field];
 			}
 			if ( $record = $model->find('first', compact('conditions', 'callbacks')) ) {
-				$modelData[$this->modelName][$model->primaryKey] = $record[$this->modelName][$model->primaryKey];
+				$modelData[$model->primaryKey] = $record[$this->modelName][$model->primaryKey];
 				$update = true;
 			}
 
