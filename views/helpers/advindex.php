@@ -33,6 +33,7 @@ class AdvindexHelper extends AppHelper {
 		// override column type if in the options
 		if ( !empty($options['type']) ) {
 			$columnType = $options['type'];
+			unset($options['type']);
 		}
 
 		// text types just get a textbox.

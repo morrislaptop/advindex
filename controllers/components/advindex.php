@@ -19,9 +19,12 @@ class AdvindexComponent extends Object {
 
 		// If no fields are specified, get all fields from the model
 		if ( !isset($settings['fields']) ) {
-			$schema = $this->controller->$modelName->schema();
-			$fields = array_keys($schema);
-			$settings['fields'] = $fields;
+			$settings['fields'] = array();
+		}
+
+		// Init array which overrides the column type reported by db.
+		if ( !isset($settings['types']) ) {
+			$settings['types'] = array();
 		}
 
 		// If there is no alias for the export / import column, put the column name as the alias.
@@ -88,12 +91,31 @@ class AdvindexComponent extends Object {
 
 		$rows = $this->controller->$modelName->find('all', compact('conditions', 'order', 'callbacks', 'fields'));
 		foreach ($rows as &$row) {
-			$row = array_pop($row);
+			$newRow = array();
+			foreach ($row as $model => $values) {
+				foreach ($values as $field => $value) {
+					$newRow[$model . '.' . $field] = $value;
+				}
+			}
+			$row = $newRow;
+		}
+
+		// Decide headers.
+		$headers = $this->settings['fields'];
+		if ( !$headers ) {
+			$headers = array_keys($rows[0]);
 		}
 
 		App::import('Vendor', 'advindex.parseCSV', array('file' => 'parsecsv-0.3.2' . DS . 'parsecsv.lib.php'));
 		$csv = new parseCSV();
-		$csv->output(true, $this->controller->name . '.csv', $rows, $this->settings['fields']);
+		$output = true;
+		$return = $csv->output($output, $this->controller->name . '.csv', $rows, $headers);
+		if ( !$output ) {
+			echo $return;
+		}
+		else {
+			Configure::write(min(Configure::read(), 1)); // get rid of sql log at the end
+		}
 		exit;
 	}
 
@@ -166,11 +188,31 @@ class AdvindexComponent extends Object {
 					continue;
 				}
 
-				$columnType = $this->controller->$modelName->getColumnType($field);
+				if ( isset($this->settings['types'][$field]) ) {
+					$columnType = $this->settings['types'][$field];
+				}
+				else {
+					$columnType = $this->controller->$modelName->getColumnType($field);
+				}
 				switch ($columnType)
 				{
 					case 'boolean':
-						$conditions[$field] = $keyword;
+						if ( $keyword ) {
+							$conditions[] = array(
+								'and' => array(
+									array($field . ' NOT' => 0),
+									array($field . ' NOT' => null)
+								)
+							);
+						}
+						else {
+							$conditions[] = array(
+								'or' => array(
+									array($field => 0),
+									array($field => null)
+								)
+							);
+						}
 					break;
 
 					case 'integer':
