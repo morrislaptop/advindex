@@ -56,6 +56,10 @@ class AdvindexComponent extends Object {
 			$this->import();
 			return;
 		}
+		if ( in_array($controller->params['action'], array('toggle', 'admin_toggle')) ) {
+			$this->toggle();
+			return;
+		}
 	}
 
 	function index() {
@@ -173,6 +177,27 @@ class AdvindexComponent extends Object {
 
 		$this->controller->Session->write('Advindex.' . $this->modelName . '.import', compact('created', 'updated', 'errors'));
 		$this->controller->redirect(array('action' => 'index'));
+	}
+	
+	function toggle() 
+	{
+		// Vars
+		$model = $this->controller->{$this->modelName};
+		$id = $this->controller->params['pass'][0];
+		$field = $this->controller->params['pass'][1];
+		
+		// Toogle change.
+		$dbField = $model->escapeField($field);
+		$model->updateAll(array($dbField => 'NOT ' . $dbField), array($model->escapeField() => $id));
+		
+		// Get new var
+		$data = $model->read($field, $id);
+		$value = $data[$model->alias][$field];
+		
+		// Set and render
+		$this->controller->set(compact('value', 'field', 'id'));
+		$this->controller->plugin = 'advindex'; // needed to set the correct paths to elements
+		$this->controller->render('/elements/toggler');
 	}
 
 	function _getConditions() {
