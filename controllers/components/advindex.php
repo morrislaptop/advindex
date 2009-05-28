@@ -178,22 +178,22 @@ class AdvindexComponent extends Object {
 		$this->controller->Session->write('Advindex.' . $this->modelName . '.import', compact('created', 'updated', 'errors'));
 		$this->controller->redirect(array('action' => 'index'));
 	}
-	
-	function toggle() 
+
+	function toggle()
 	{
 		// Vars
 		$model = $this->controller->{$this->modelName};
 		$id = $this->controller->params['pass'][0];
 		$field = $this->controller->params['pass'][1];
-		
+
 		// Toogle change.
 		$dbField = $model->escapeField($field);
 		$model->updateAll(array($dbField => 'NOT ' . $dbField), array($model->escapeField() => $id));
-		
+
 		// Get new var
 		$data = $model->read($field, $id);
 		$value = $data[$model->alias][$field];
-		
+
 		// Set and render
 		$this->controller->set(compact('value', 'field', 'id'));
 		$this->controller->plugin = 'advindex'; // needed to set the correct paths to elements
@@ -205,8 +205,7 @@ class AdvindexComponent extends Object {
 		$modelName = $this->modelName;
 		$conditions = array();
 
-		if ( $this->controller->Session->check($sessionKey) ) {
-			$filter = $this->controller->Session->read($sessionKey);
+		if ( $filter = $this->controller->Session->read($sessionKey) ) {
 
 			foreach ($filter as $field => $keyword) {
 				if ( (empty($keyword) && $keyword !== '0') || !$this->controller->$modelName->hasField($field) ) {
