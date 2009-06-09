@@ -49,7 +49,7 @@ class AdvindexComponent extends Object {
 			return;
 		}
 		if ( in_array($controller->params['action'], array('export', 'admin_export')) ) {
-			$this->export();
+			call_user_func_array(array($this, 'export'), $this->controller->params['pass']);
 			return;
 		}
 		if ( in_array($controller->params['action'], array('import', 'admin_import')) ) {
@@ -81,7 +81,8 @@ class AdvindexComponent extends Object {
 		 }
 	}
 
-	function export() {
+	function export($text = false) {
+
 		// get the conditions
 		$conditions = $this->_getConditions();
 		$modelName = $this->modelName;
@@ -112,13 +113,11 @@ class AdvindexComponent extends Object {
 
 		App::import('Vendor', 'advindex.parseCSV', array('file' => 'parsecsv-0.3.2' . DS . 'parsecsv.lib.php'));
 		$csv = new parseCSV();
-		$output = true;
-		$return = $csv->output($output, $this->controller->name . '.csv', $rows, $headers);
-		if ( !$output ) {
+		$return = $csv->output(!$text, $this->controller->name . '.csv', $rows, $headers);
+		Configure::write('debug', min(Configure::read(), 1)); // get rid of sql log at the end
+		if ( $text ) {
+			header('Content-type: text/plain');
 			echo $return;
-		}
-		else {
-			Configure::write(min(Configure::read(), 1)); // get rid of sql log at the end
 		}
 		exit;
 	}
