@@ -1,27 +1,27 @@
 <?php
 class AdvindexHelper extends AppHelper {
 
-	var $helpers = array('Uniform.Uniform', 'Html', 'Paginator', 'Form', 'Session');
+	var $helpers = array('Advform', 'Html', 'Paginator', 'Form', 'Session');
 
 	/**
 	* @var FormHelper
 	*/
 	var $Form;
 	/**
-	* @var UniformHelper
+	* @var AdvformHelper
 	*/
-	var $UniformHelper;
+	var $AdvformHelper;
 
 	function create($model) {
-		return $this->Uniform->create($model, array('action' => 'index'));
+		return $this->Advform->create($model, array('action' => 'index'));
 	}
 
 	function end() {
-		return $this->Uniform->end();
+		return $this->Advform->end();
 	}
 
 	function search() {
-		return $this->Uniform->submit('Search');
+		return $this->Advform->submit('Search');
 	}
 
 	function filter($field, $options = array()) {
@@ -45,34 +45,34 @@ class AdvindexHelper extends AppHelper {
 					'True'
 				);
 				$options = array_merge(array('type' => 'select', 'label' => false, 'div' => false, 'empty' => true, 'options' => $selOptions), $options);
-				return $this->Uniform->input($field, $options);
+				return $this->Advform->input($field, $options);
 			break;
 
 			case 'integer':
-				$from = $this->Uniform->input($field . '.from');
-				$to = $this->Uniform->input($field . '.to');
+				$from = $this->Advform->input($field . '.from');
+				$to = $this->Advform->input($field . '.to');
 				return $from . $to;
 			break;
 
 			case 'date':
-				$from = $this->Uniform->input($field . '.from', array('label' => 'From', 'type' => 'calendar'));
-				$to = $this->Uniform->input($field . '.to', array('label' => 'To', 'type' => 'calendar'));
+				$from = $this->Advform->input($field . '.from', array('label' => 'From', 'type' => 'calendar'));
+				$to = $this->Advform->input($field . '.to', array('label' => 'To', 'type' => 'calendar'));
 				return $from . $to;
 			break;
 
 			case 'datetime':
 			case 'timestamp':
-				$from = $this->Uniform->input($field . '.from', array('label' => 'From', 'type' => 'calendar'));
-				$fromTime = $this->Uniform->input($field . '.from', array('type' => 'time', 'empty' => true, 'label' => false));
-				$to = $this->Uniform->input($field . '.to', array('label' => 'To', 'type' => 'calendar'));
-				$toTime = $this->Uniform->input($field .'.to', array('type' => 'time', 'empty' => true, 'label' => false));
+				$from = $this->Advform->input($field . '.from', array('label' => 'From', 'type' => 'calendar'));
+				$fromTime = $this->Advform->input($field . '.from', array('type' => 'time', 'empty' => true, 'label' => false));
+				$to = $this->Advform->input($field . '.to', array('label' => 'To', 'type' => 'calendar'));
+				$toTime = $this->Advform->input($field .'.to', array('type' => 'time', 'empty' => true, 'label' => false));
 				return $from .$fromTime . $to . $toTime;
 			break;
 
 			case 'time':
 				$options = array_merge(array('empty' => true, 'type' => 'time'), $options);
-				$from = $this->Uniform->input($field . '.from', $options);
-				$to = $this->Uniform->input($field . '.to', $options);
+				$from = $this->Advform->input($field . '.from', $options);
+				$to = $this->Advform->input($field . '.to', $options);
 				return $from . $to;
 			break;
 
@@ -80,12 +80,12 @@ class AdvindexHelper extends AppHelper {
 			case 'string':
 			default:
 				$options = array_merge(array('type' => 'text', 'label' => false, 'empty' => true), $options);
-				return $this->Uniform->input($field, $options);
+				return $this->Advform->input($field, $options);
 			break;
 		}
 
 
-		return $this->Uniform->input($field, $options);
+		return $this->Advform->input($field, $options);
 	}
 
 	function export($label) {
@@ -151,7 +151,7 @@ class AdvindexHelper extends AppHelper {
 		if ( $limit == PHP_INT_MAX ) {
 			$limit = 'All';
 		}
-		return $this->Uniform->select('perPage', $opts, $limit, array('onchange' => "this.form.submit();"), false);
+		return $this->Advform->select('perPage', $opts, $limit, array('onchange' => "this.form.submit();"), false);
 	}
 }
 ?>
