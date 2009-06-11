@@ -17,15 +17,12 @@ class AdvindexComponent extends Object {
 		$this->modelName = $modelName = reset($this->controller->modelNames);
 		$this->sessionKey = 'advindex.' . $this->modelName;
 
-		// If no fields are specified, get all fields from the model
-		if ( !isset($settings['fields']) ) {
-			$settings['fields'] = array();
-		}
-
-		// Init array which overrides the column type reported by db.
-		if ( !isset($settings['types']) ) {
-			$settings['types'] = array();
-		}
+		$default = array(
+			'fields' => array_keys($this->controller->$modelName->schema()),
+			'types' => array(),
+			'update_if_fields' => array($this->controller->$modelName->primaryKey)
+		);
+		$settings = array_merge($default, $settings);
 
 		// If there is no alias for the export / import column, put the column name as the alias.
 		$newFields = array();
@@ -105,16 +102,15 @@ class AdvindexComponent extends Object {
 			$row = $newRow;
 		}
 
-		// Decide headers.
-		$headers = $this->settings['fields'];
+		// if no fields specced and no results, we need to get headers from model class.
 		if ( !$headers ) {
-			$headers = array_keys($rows[0]);
+			$headers = array_keys($this->controller->$modelName->schema());
 		}
 
 		App::import('Vendor', 'advindex.parseCSV', array('file' => 'parsecsv-0.3.2' . DS . 'parsecsv.lib.php'));
 		$csv = new parseCSV();
-		$return = $csv->output(!$text, $this->controller->name . '.csv', $rows, $headers);
-		Configure::write('debug', min(Configure::read(), 1)); // get rid of sql log at the end
+		$return = $csv->output(!$text, $this->controller->name . '.csv', $rows, $this->settings['fields']);
+		Configure::write('debug', 0); // get rid of sql log at the end
 		if ( $text ) {
 			header('Content-type: text/plain');
 			echo $return;
@@ -157,11 +153,11 @@ class AdvindexComponent extends Object {
 			// try and find an existing row.
 			$update = false;
 			$conditions = array();
-			$callbacks = false;
+			$contain = array();
 			foreach ($this->settings['update_if_fields'] as $field) {
 				$conditions[$field] = $modelData[$field];
 			}
-			if ( $record = $model->find('first', compact('conditions', 'callbacks')) ) {
+			if ( $record = $model->find('first', compact('conditions', 'contain')) ) {
 				$modelData[$model->primaryKey] = $record[$this->modelName][$model->primaryKey];
 				$update = true;
 			}

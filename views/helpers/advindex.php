@@ -118,7 +118,7 @@ class AdvindexHelper extends AppHelper {
 		$import = $this->Session->read($sessionKey);
 
 		if ( $import ) {
-			$out .= '<div class="message"><p>Results of your import:</p><ul>';
+			$out .= '<div id="flashMessage" class="message"><p>Results of your import:</p><ul>';
 			$out .= '<li>' . $import['created'] . ' ' . __n('record', 'records', $import['created'], true) . ' created</li>';
 			$out .= '<li>' . $import['updated'] . ' ' . __n('record', 'records', $import['updated'], true) . ' updated</li>';
 			if ( $import['errors'] ) {
