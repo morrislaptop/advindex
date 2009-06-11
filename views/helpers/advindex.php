@@ -25,9 +25,9 @@ class AdvindexHelper extends AppHelper {
 	}
 
 	function filter($field, $options = array()) {
-
 		$this->setEntity($field);
-		$model =& ClassRegistry::getObject($this->model());
+		$modelName = $this->model();
+		$model =& ClassRegistry::getObject($modelName);
 		$columnType = $model->getColumnType($this->field());
 
 		// override column type if in the options
@@ -45,6 +45,9 @@ class AdvindexHelper extends AppHelper {
 		if ( $match === substr($field, -strlen($match)) ) {
 			$columnType = 'select';
 		}
+
+		// qualify model.
+		$field = $modelName . '.' . $field;
 
 		// text types just get a textbox.
 		switch ($columnType)

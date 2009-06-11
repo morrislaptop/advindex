@@ -16,11 +16,10 @@ class AdvindexComponent extends Object {
 	function _initSettings($settings) {
 		$this->modelName = $modelName = reset($this->controller->modelNames);
 		$this->sessionKey = 'advindex.' . $this->modelName;
-
 		$default = array(
-			'fields' => array_keys($this->controller->$modelName->schema()),
+			'fields' => $modelName ? array_keys($this->controller->$modelName->schema()) : array(),
 			'types' => array(),
-			'update_if_fields' => array($this->controller->$modelName->primaryKey)
+			'update_if_fields' => $modelName ? array($this->controller->$modelName->primaryKey) : array()
 		);
 		$settings = array_merge($default, $settings);
 
