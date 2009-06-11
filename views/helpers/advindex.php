@@ -35,6 +35,16 @@ class AdvindexHelper extends AppHelper {
 			$columnType = $options['type'];
 			unset($options['type']);
 		}
+		else if ( 'datetime' == $columnType ) {
+			// pretty safe to assume we want to turn date times into dates
+			$columnType = 'date';
+		}
+
+		// change integer column types if they are some sort of id.
+		$match = '_id';
+		if ( $match === substr($field, -strlen($match)) ) {
+			$columnType = 'select';
+		}
 
 		// text types just get a textbox.
 		switch ($columnType)
@@ -152,6 +162,25 @@ class AdvindexHelper extends AppHelper {
 			$limit = 'All';
 		}
 		return $this->Advform->select('perPage', $opts, $limit, array('onchange' => "this.form.submit();"), false);
+	}
+
+	/**
+	* Returns the columns for the current model.
+	*/
+	function cols() {
+		$model = reset($this->params['models']);
+		$var = Inflector::pluralize(Inflector::variable($model));
+		$view = ClassRegistry::getObject('view');
+		$rows = $view->viewVars[$var];
+		if ( $rows ) {
+			$cols = array_keys($rows[0][$model]);
+		}
+		else {
+			// what do we do, no keys!
+			$model = ClassRegistry::getObject($model);
+			$cols = array_keys($model->schema());
+		}
+		return $cols;
 	}
 }
 ?>

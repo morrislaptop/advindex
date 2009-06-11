@@ -217,6 +217,9 @@ class AdvindexComponent extends Object {
 				else {
 					$columnType = $this->controller->$modelName->getColumnType($field);
 				}
+
+				$field = $modelName . '.' . $field;
+
 				switch ($columnType)
 				{
 					case 'boolean':
@@ -288,7 +291,6 @@ class AdvindexComponent extends Object {
 			}
 
 		}
-
 		return $conditions;
 	}
 
