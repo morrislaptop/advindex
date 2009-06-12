@@ -62,6 +62,7 @@ class AdvindexHelper extends AppHelper {
 			break;
 
 			case 'integer':
+			case 'float':
 				$from = $this->Advform->input($field . '.from');
 				$to = $this->Advform->input($field . '.to');
 				return $from . $to;

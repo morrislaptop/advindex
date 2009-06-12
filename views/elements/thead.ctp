@@ -8,7 +8,6 @@
 			$cols = array_diff($cols, $exclude);
 		}
 	}
-
 ?>
 <thead>
 	<tr>
@@ -19,12 +18,12 @@
 			{
 				$sortOptions = array();
 				$key = null;
-				if ( isset($options[$col]['sort']) ) {
-					$sortOptions = $options[$col]['sort'];
-					if ( isset($sortOptions['key']) ) {
+				if ( isset($$col) ) {
+					$options = $$col;
+					if ( isset($options['label']) ) {
 						$key = $col;
-						$col = $sortOptions['key'];
-						unset($sortOptions['key']);
+						$col = $options['label'];
+						unset($options['label']);
 					}
 				}
 
