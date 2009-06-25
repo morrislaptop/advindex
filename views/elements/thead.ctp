@@ -19,7 +19,7 @@
 			$key = null;
 			if ( isset($$col) ) {
 				$options = $$col;
-				if ( isset($options['label']) ) {
+				if ( isset($options['label']) && is_array($options['label']) ) {
 					$key = $col;
 					$col = $options['label'];
 					unset($options['label']);

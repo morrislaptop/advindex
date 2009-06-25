@@ -41,6 +41,11 @@ class AdvindexHelper extends AppHelper {
 			$columnType = 'date';
 		}
 
+		// dont escape by defualt.
+		if ( !isset($options['escape']) ) {
+			$options['escape'] = false;
+		}
+
 		// change integer column types if they are some sort of id.
 		$match = '_id';
 		if ( $match === substr($field, -strlen($match)) ) {
