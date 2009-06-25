@@ -64,8 +64,8 @@ class AdvindexHelper extends AppHelper {
 
 			case 'integer':
 			case 'float':
-				$from = $this->Advform->input($field . '.from', array_merge(array('type' => 'text'), $options));
-				$to = $this->Advform->input($field . '.to', array_merge(array('type' => 'text'), $options));
+				$from = $this->Advform->input($field . '.from', array_merge(array('type' => 'text', 'class' => 'range'), $options));
+				$to = $this->Advform->input($field . '.to', array_merge(array('type' => 'text', 'class' => 'range'), $options));
 				return $from . $to;
 			break;
 
