@@ -191,7 +191,10 @@ class AdvindexComponent extends Object {
 		// Set and render
 		$this->controller->set(compact('value', 'field', 'id'));
 		$this->controller->plugin = 'advindex'; // needed to set the correct paths to elements
-		$this->controller->render('/elements/toggler');
+		$this->controller->layout = 'ajax';
+		Configure::write('debug', 1); // turn off db
+		echo $this->controller->render('/elements/toggler');
+		exit;
 	}
 
 	function _getConditions() {

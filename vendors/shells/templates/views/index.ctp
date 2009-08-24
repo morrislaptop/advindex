@@ -23,11 +23,28 @@
  */
 ?>
 <div class="<?php echo $pluralVar;?> index">
-<h2><?php echo "<?php __('{$pluralHumanName}');?>\n";?></h2>
+<h2><?php echo "<?php __('{$pluralHumanName}');?>";?></h2>
 <?php echo "<?php echo \$advindex->create('{$singularHumanName}'); ?>\n"; ?>
 <table cellpadding="0" cellspacing="0">
 <thead>
-	<?php echo "<?php echo \$this->element('thead', array('plugin' => 'advindex')); ?>\n"; ?>
+	<tr>
+<?php
+	$first = true;
+	foreach ($fields as $field) {
+		echo "\t\t<th" . ($first ? ' class="headerLeft"' : '') . "><?php echo \$paginator->sort('{$field}'); ?></th>\n";
+		$first = false;
+	}
+?>
+		<th class="headerRight actions"><?php echo "<?php __('Actions'); ?>"; ?></th>
+	</tr>
+	<tr class="filter">
+<?php
+	foreach ($fields as $field) {
+		echo "\t\t<td><?php echo \$advindex->filter('{$field}'); ?></td>\n";
+	}
+?>
+		<td><?php echo "<?php echo \$advindex->search(); ?>"; ?></td>
+	</tr>
 </thead>
 <tbody>
 <?php
