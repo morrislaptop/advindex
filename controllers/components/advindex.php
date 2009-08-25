@@ -44,17 +44,20 @@ class AdvindexComponent extends Object {
 			$this->index();
 			return;
 		}
-		if ( in_array($controller->params['action'], array('export', 'admin_export')) ) {
-			call_user_func_array(array($this, 'export'), $this->controller->params['pass']);
-			return;
-		}
-		if ( in_array($controller->params['action'], array('import', 'admin_import')) ) {
-			$this->import();
-			return;
-		}
 		if ( in_array($controller->params['action'], array('toggle', 'admin_toggle')) ) {
 			$this->toggle();
 			return;
+		}
+		if ( !method_exists($controller, $controller->params['action']) )
+		{
+			if ( in_array($controller->params['action'], array('import', 'admin_import')) ) {
+				$this->import();
+				return;
+			}
+			if ( in_array($controller->params['action'], array('export', 'admin_export')) ) {
+				call_user_func_array(array($this, 'export'), $this->controller->params['pass']);
+				return;
+			}
 		}
 	}
 
@@ -121,14 +124,17 @@ class AdvindexComponent extends Object {
 	* @todo Implement truncate
 	*
 	*/
-	function import() {
+	function import()
+	{
+		set_time_limit(0);
 		$file = $this->controller->data[$this->modelName]['csv']['tmp_name'];
 		$truncate = $this->controller->data[$this->modelName]['truncate'];
 		$model = $this->controller->{$this->modelName};
 
 		// truncate the table.
 		if ( $truncate ) {
-			$model->deleteAll(1);
+			#$model->contain();
+			$model->deleteAll(array(1 => 1));
 		}
 
 		// parseCSV does lots of magic to fill $csv->data
@@ -141,28 +147,46 @@ class AdvindexComponent extends Object {
 		$errors = array();
 		$created = $updated = 0;
 
-		foreach ($csv->data as $line => $row) {
-			$modelData = array();
-			foreach ($row as $field => $val) {
-				$modelData[$fields[$field]] = trim($val);
-			}
+		// Callbacks.
+		$hasBeforeCallback = method_exists($model, 'beforeImport');
+		$hasAfterCallback = method_exists($model, 'afterImport');
 
+		foreach ($csv->data as $line => $row)
+		{
+			// start again
 			$model->create();
+
+			// format row
+			$modelData = array();
+			if ( $hasBeforeCallback ) {
+				$modelData = $model->beforeImport($row);
+			}
+			else {
+				foreach ($row as $field => $val) {
+					$modelData[$fields[$field]] = trim($val);
+				}
+			}
 
 			// try and find an existing row.
 			$update = false;
 			$conditions = array();
 			$contain = array();
 			foreach ($this->settings['update_if_fields'] as $field) {
-				$conditions[$field] = $modelData[$field];
+				if ( !empty($modelData[$field]) ) {
+					$conditions[$field] = $modelData[$field];
+				}
 			}
-			if ( $record = $model->find('first', compact('conditions', 'contain')) ) {
+			if ( $conditions && $record = $model->find('first', compact('conditions', 'contain')) ) {
 				$modelData[$model->primaryKey] = $record[$this->modelName][$model->primaryKey];
 				$update = true;
 			}
 
-			if ( $model->save($modelData) ) {
+			if ( $model->saveAll($modelData) ) {
 				($update ? $updated++ : $created++);
+
+				if ( $hasAfterCallback ) {
+					$model->afterImport($modelData);
+				}
 			}
 			else {
 				$errors[$line] = $model->validationErrors;
