@@ -40,22 +40,31 @@ class AdvindexComponent extends Object {
 
 	//called after Controller::beforeFilter()
 	function startup(&$controller) {
-		if ( in_array($controller->params['action'], array('index', 'admin_index')) ) {
+		$action = $controller->params['action'];
+
+		// Methods we assist with here - we dont need to take over
+		if ( in_array($action, array('index', 'admin_index')) ) {
 			$this->index();
 			return;
 		}
-		if ( in_array($controller->params['action'], array('toggle', 'admin_toggle')) ) {
+		if ( in_array($action, array('toggle', 'admin_toggle')) ) {
 			$this->toggle();
 			return;
 		}
+
+		// Methods we take over here - check the controller doesnt have their own method for it.
 		if ( !method_exists($controller, $controller->params['action']) )
 		{
-			if ( in_array($controller->params['action'], array('import', 'admin_import')) ) {
+			if ( in_array($action, array('import', 'admin_import')) ) {
 				$this->import();
 				return;
 			}
-			if ( in_array($controller->params['action'], array('export', 'admin_export')) ) {
-				call_user_func_array(array($this, 'export'), $this->controller->params['pass']);
+			if ( in_array($action, array('export', 'admin_export')) ) {
+				$this->export();
+				return;
+			}
+			if ( in_array($action, array('save_order', 'admin_save_order')) ) {
+				$this->save_order();
 				return;
 			}
 		}
@@ -80,7 +89,12 @@ class AdvindexComponent extends Object {
 		 }
 	}
 
-	function export($text = false) {
+	function export()
+	{
+		$text = false;
+		if ( $this->controller->params['pass'] ) {
+			$text = $this->controller->params['pass'][0];
+		}
 
 		// get the conditions
 		$conditions = $this->_getConditions();
@@ -181,7 +195,7 @@ class AdvindexComponent extends Object {
 				$update = true;
 			}
 
-			if ( $model->saveAll($modelData) ) {
+			if ( $saved = $model->saveAll($modelData) ) {
 				($update ? $updated++ : $created++);
 
 				if ( $hasAfterCallback ) {
@@ -219,6 +233,20 @@ class AdvindexComponent extends Object {
 		Configure::write('debug', 1); // turn off db
 		echo $this->controller->render('/elements/toggler');
 		exit;
+	}
+
+	function save_order()
+	{
+		$id = $this->controller->params['pass'][0];
+		$modelClass = $this->controller->modelClass;
+		$data = $this->controller->data;
+    	if (!$id || !is_numeric($id) || !isset($data[$modelClass]['order']) || !is_numeric($data[$modelClass]['order'])) {
+      		echo 'Invalid Format';
+      		debug($id);
+      		exit;
+    	}
+    	$this->controller->$modelClass->id = $id;
+    	die(json_encode($this->controller->$modelClass->save($data, true, array('order'))));
 	}
 
 	function _getConditions() {

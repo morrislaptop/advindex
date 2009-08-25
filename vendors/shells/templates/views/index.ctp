@@ -22,6 +22,11 @@
  * @license       http://www.opensource.org/licenses/mit-license.php The MIT License
  */
 ?>
+<?php
+	if ( $hasOrder = in_array('order', $fields) ) {
+		echo "<?php echo \$this->element('js_ordering', array('plugin' => 'advindex', 'model' => '{$modelClass}')); ?>\n";
+	}
+?>
 <div class="<?php echo $pluralVar;?> index">
 <h2><?php echo "<?php __('{$pluralHumanName}');?>";?></h2>
 <?php echo "<?php echo \$advindex->create('{$singularHumanName}'); ?>\n"; ?>
@@ -35,7 +40,7 @@
 		$first = false;
 	}
 ?>
-		<th class="headerRight actions"><?php echo "<?php __('Actions'); ?>"; ?></th>
+		<th<?php echo $hasOrder ? ' colspan="2"' : ''; ?> class="headerRight actions"><?php echo "<?php __('Actions'); ?>"; ?></th>
 	</tr>
 	<tr class="filter">
 <?php
@@ -43,7 +48,7 @@
 		echo "\t\t<td><?php echo \$advindex->filter('{$field}'); ?></td>\n";
 	}
 ?>
-		<td><?php echo "<?php echo \$advindex->search(); ?>"; ?></td>
+		<td<?php echo $hasOrder ? ' colspan="2"' : ''; ?>><?php echo "<?php echo \$advindex->search(); ?>"; ?></td>
 	</tr>
 </thead>
 <tbody>
@@ -55,8 +60,9 @@ foreach (\${$pluralVar} as \${$singularVar}):
 	if (\$i++ % 2 == 0) {
 		\$class = ' class=\"altrow\"';
 	}
+	\$id = \${$singularVar}['{$modelClass}']['id'];
 ?>\n";
-	echo "\t<tr<?php echo \$class;?>>\n";
+	echo "\t<tr<?php echo \$class;?> id=\"<?php echo \$id; ?>\">\n";
 		foreach ($fields as $field) {
 			$isKey = false;
 			if (!empty($associations['belongsTo'])) {
@@ -71,6 +77,10 @@ foreach (\${$pluralVar} as \${$singularVar}):
 			if ($isKey !== true) {
 				echo "\t\t<td>\n\t\t\t<?php echo \${$singularVar}['{$modelClass}']['{$field}']; ?>\n\t\t</td>\n";
 			}
+		}
+
+		if ( $hasOrder ) {
+			echo "\t\t<td class=\"dragHandle\"><?php echo \$html->image('/advindex/img/drag_handle.gif', array('alt' => 'Drag', 'style' => 'cursor: move;')); ?></td>\n";
 		}
 
 		echo "\t\t<td class=\"actions\">\n";
