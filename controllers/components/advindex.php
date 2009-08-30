@@ -60,7 +60,7 @@ class AdvindexComponent extends Object {
 				return;
 			}
 			if ( in_array($action, array('export', 'admin_export')) ) {
-				$this->export();
+				call_user_func_array(array($this, 'export'), $this->controller->params['pass']);
 				return;
 			}
 			if ( in_array($action, array('save_order', 'admin_save_order')) ) {
@@ -89,12 +89,7 @@ class AdvindexComponent extends Object {
 		 }
 	}
 
-	function export()
-	{
-		$text = false;
-		if ( $this->controller->params['pass'] ) {
-			$text = $this->controller->params['pass'][0];
-		}
+	function export($text = false) {
 
 		// get the conditions
 		$conditions = $this->_getConditions();
@@ -116,11 +111,6 @@ class AdvindexComponent extends Object {
 				}
 			}
 			$row = $newRow;
-		}
-
-		// if no fields specced and no results, we need to get headers from model class.
-		if ( !$headers ) {
-			$headers = array_keys($this->controller->$modelName->schema());
 		}
 
 		App::import('Vendor', 'advindex.parseCSV', array('file' => 'parsecsv-0.3.2' . DS . 'parsecsv.lib.php'));
