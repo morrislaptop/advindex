@@ -177,6 +177,9 @@ class AdvindexComponent extends Object {
 			}
 			else {
 				foreach ($row as $field => $val) {
+					if ( !isset($fields[$field]) ) {
+						continue;
+					}
 					$modelData[$fields[$field]] = trim($val);
 				}
 			}
