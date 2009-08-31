@@ -15,7 +15,7 @@ class AdvindexComponent extends Object {
 
 	function _initSettings($settings) {
 		$this->modelName = $modelName = reset($this->controller->modelNames);
-		$this->sessionKey = 'advindex.' . $this->modelName;
+		$this->sessionKey = 'Advindex.' . $this->modelName;
 		$default = array(
 			'fields' => $modelName ? array_keys($this->controller->$modelName->schema()) : array(),
 			'types' => array(),
@@ -82,11 +82,49 @@ class AdvindexComponent extends Object {
 		$this->controller->paginate['conditions'] = $conditions;
 
 		// Per Page
-		 $perPageKey = $this->sessionKey . '.perPage';
-		 $perPage = $this->controller->Session->read($perPageKey);
-		 if ( $perPage ) {
-			 $this->controller->paginate['limit'] = 'All' == $perPage ? PHP_INT_MAX : $perPage;
-		 }
+		$perPageKey = $this->sessionKey . '.perPage';
+		$perPage = $this->controller->Session->read($perPageKey);
+		if ( $perPage ) {
+			$this->controller->paginate['limit'] = 'All' == $perPage ? PHP_INT_MAX : $perPage;
+		}
+
+		// Current Page
+		$currPageKey = $this->sessionKey . '.currPage';
+		if ( !empty($this->controller->passedArgs['page']) ) {
+			$currPage = $this->controller->passedArgs['page'];
+			$this->controller->Session->write($currPageKey, $currPage);
+		}
+		else {
+			$currPage = $this->controller->Session->read($currPageKey);
+		}
+		if ( $currPage ) {
+			$this->controller->paginate['page'] = $currPage;
+		}
+
+		// Sorting
+		$sortKey = $this->sessionKey . '.sort';
+		if ( !empty($this->controller->passedArgs['sort']) ) {
+			$sort = $this->controller->passedArgs['sort'];
+			$this->controller->Session->write($sortKey, $sort);
+		}
+		else {
+			$sort = $this->controller->Session->read($sortKey);
+		}
+		# controller set below
+
+		// Sort Direction
+		$directionKey = $this->sessionKey . '.direction';
+		if ( !empty($this->controller->passedArgs['direction']) ) {
+			$direction = $this->controller->passedArgs['direction'];
+			$this->controller->Session->write($directionKey, $direction);
+		}
+		else {
+			$direction = $this->controller->Session->read($directionKey);
+		}
+		# controller set below
+
+		// Set order from the sort field and direciton.
+		$this->controller->paginate['order'] = $sort . ' ' . $direction;
 	}
 
 	function export($text = false) {
