@@ -124,7 +124,9 @@ class AdvindexComponent extends Object {
 		# controller set below
 
 		// Set order from the sort field and direciton.
-		$this->controller->paginate['order'] = $sort . ' ' . $direction;
+		if ( $sort ) {
+			$this->controller->paginate['order'] = $sort . ' ' . $direction;
+		}
 	}
 
 	function export($text = false) {
