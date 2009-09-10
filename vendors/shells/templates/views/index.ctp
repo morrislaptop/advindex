@@ -29,6 +29,8 @@
 ?>
 <div class="<?php echo $pluralVar;?> index">
 <h2><?php echo "<?php __('{$pluralHumanName}');?>";?></h2>
+<p><?php echo "<?php echo \$advindex->export('Export as CSV'); ?> | <?php echo \$html->link('Import from CSV', '#', array('onclick' => \"\$('#{$modelClass}ImportForm').toggle();\")); ?></p>\n"; ?>
+<?php echo "<?php echo \$this->element('import_form', array('plugin' => 'advindex', 'model' => '{$modelClass}')); ?>\n"; ?>
 <?php echo "<?php echo \$advindex->create('{$singularHumanName}'); ?>\n"; ?>
 <table cellpadding="0" cellspacing="0">
 <thead>

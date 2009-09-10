@@ -137,7 +137,7 @@ class ControllerTask extends Shell {
 			if (low($wannaUseScaffold) == 'n' || low($wannaUseScaffold) == 'no') {
 
 				$wannaDoScaffolding = $this->in(__("Would you like to include some basic class methods (index(), add(), view(), edit())?", true), array('y','n'), 'n');
-				$wannaDoAdmin = $this->in(__("Would you like to create the methods for admin routing?", true), array('y','n'), 'n');
+				$wannaDoAdmin = $this->in(__("Would you like to create the methods for admin routing?", true), array('y','n'), 'y');
 
 				$wannaDoHelpers = $this->in(__("Would you like this controller to use other helpers besides HtmlHelper and FormHelper?", true), array('y','n'), 'n');
 
@@ -233,7 +233,10 @@ class ControllerTask extends Shell {
  * @return string Baked actions
  * @access private
  */
-	function bakeActions($controllerName, $admin = null, $wannaUseSession = true) {
+	function bakeActions($controllerName, $admin = false, $wannaUseSession = true) {
+		if ( $admin === false ) {
+			$admin = $this->getAdmin();
+		}
 		$currentModelName = $this->_modelName($controllerName);
 		if (!App::import('Model', $currentModelName)) {
 			$this->err(__('You must have a model for this class to build scaffold methods. Please try again.', true));
@@ -403,7 +406,7 @@ class ControllerTask extends Shell {
 				$out .= ");\n";
 			}
 
-			$out .= "\tvar \$helpers = array('Html', 'Form'";
+			$out .= "\tvar \$helpers = array('Html', 'Form', 'Advindex.Advindex'";
 			if (count($helpers)) {
 				foreach ($helpers as $help) {
 					$out .= ", '" . Inflector::camelize($help) . "'";
@@ -411,6 +414,7 @@ class ControllerTask extends Shell {
 			}
 			$out .= ");\n";
 
+			$components[] = 'Advindex.Advindex';
 			if (count($components)) {
 				$out .= "\tvar \$components = array(";
 
