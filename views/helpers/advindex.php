@@ -14,15 +14,15 @@ class AdvindexHelper extends AppHelper {
 
 	function create($model) {
 		// we have to set the url manually as the id in the form data causes Router errors.
-		return $this->Advform->create($model, array('url' => $this->url(array('action' => 'index'))));
+		return $this->Form->create($model, array('url' => $this->url(array('action' => 'index'))));
 	}
 
 	function end() {
-		return $this->Advform->end();
+		return $this->Form->end();
 	}
 
 	function search() {
-		return $this->Advform->submit('Search');
+		return $this->Form->submit('Search');
 	}
 
 	function filter($field, $options = array()) {
@@ -129,7 +129,7 @@ class AdvindexHelper extends AppHelper {
 		if ( $limit == PHP_INT_MAX ) {
 			$limit = 'All';
 		}
-		return $this->Advform->select('perPage', $opts, $limit, array('onchange' => "this.form.submit();"), false);
+		return $this->Form->select('perPage', $opts, $limit, array('onchange' => "this.form.submit();"), false);
 	}
 
 	/**
