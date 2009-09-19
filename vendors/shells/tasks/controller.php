@@ -345,30 +345,31 @@ class ControllerTask extends Shell {
 		$actions .= "\n";
 
 		/* FORM DATA */
-		$actions .= "\tfunction _setFormData() {\n";
-		foreach ($modelObj->hasAndBelongsToMany as $associationName => $relation) {
-			if (!empty($associationName)) {
-				$habtmModelName = $this->_modelName($associationName);
-				$habtmSingularName = $this->_singularName($associationName);
-				$habtmPluralName = $this->_pluralName($associationName);
-				$actions .= "\t\t\${$habtmPluralName} = \$this->{$currentModelName}->{$habtmModelName}->find('list');\n";
-				$compact[] = "'{$habtmPluralName}'";
+		if ( $admin ) {
+			$actions .= "\tfunction _setFormData() {\n";
+			foreach ($modelObj->hasAndBelongsToMany as $associationName => $relation) {
+				if (!empty($associationName)) {
+					$habtmModelName = $this->_modelName($associationName);
+					$habtmSingularName = $this->_singularName($associationName);
+					$habtmPluralName = $this->_pluralName($associationName);
+					$actions .= "\t\t\${$habtmPluralName} = \$this->{$currentModelName}->{$habtmModelName}->find('list');\n";
+					$compact[] = "'{$habtmPluralName}'";
+				}
 			}
-		}
-		foreach ($modelObj->belongsTo as $associationName => $relation) {
-			if (!empty($associationName)) {
-				$belongsToModelName = $this->_modelName($associationName);
-				$belongsToPluralName = $this->_pluralName($associationName);
-				$actions .= "\t\t\${$belongsToPluralName} = \$this->{$currentModelName}->{$belongsToModelName}->find('list');\n";
-				$compact[] = "'{$belongsToPluralName}'";
+			foreach ($modelObj->belongsTo as $associationName => $relation) {
+				if (!empty($associationName)) {
+					$belongsToModelName = $this->_modelName($associationName);
+					$belongsToPluralName = $this->_pluralName($associationName);
+					$actions .= "\t\t\${$belongsToPluralName} = \$this->{$currentModelName}->{$belongsToModelName}->find('list');\n";
+					$compact[] = "'{$belongsToPluralName}'";
+				}
 			}
+			if (!empty($compact)) {
+				$actions .= "\t\t\$this->set(compact(".join(', ', $compact)."));\n";
+			}
+			$actions .= "\t}\n";
+			$actions .= "\n";
 		}
-		if (!empty($compact)) {
-			$actions .= "\t\t\$this->set(compact(".join(', ', $compact)."));\n";
-		}
-		$actions .= "\t}\n";
-		$actions .= "\n";
-
 
 		return $actions;
 	}
@@ -427,6 +428,23 @@ class ControllerTask extends Shell {
 				}
 				$out .= ");\n";
 			}
+			
+			// Add model variables for IDE shortcuts
+			if ( !is_array($uses) ) {
+				$uses = array($this->_modelName($controllerName));
+			}
+			else {
+				$uses = array_unshift($uses, $this->_modelName($controllerName));
+			}
+			foreach ($uses as $use)
+			{
+				$out .= "\n";
+				$out .= "\t/**\n";
+				$out .= "\t* @var " . $this->_modelName($use) . "\n";
+				$out .= "\t*/\n";
+				$out .= "\tvar \$" . $this->_modelName($use) . ";\n";				
+			}
+			
 			$out .= $actions;
 		}
 		$out .= "}\n";
