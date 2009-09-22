@@ -17,7 +17,7 @@ class AdvindexComponent extends Object {
 		$this->modelName = $modelName = reset($this->controller->modelNames);
 		$this->sessionKey = 'Advindex.' . $this->modelName;
 		$default = array(
-			'fields' => $modelName ? array_keys($this->controller->$modelName->schema()) : array(),
+			'fields' => $modelName ? $this->_getDefaultFields($this->controller->$modelName) : array(),
 			'types' => array(),
 			'update_if_fields' => $modelName ? array($this->controller->$modelName->primaryKey) : array()
 		);
@@ -36,6 +36,22 @@ class AdvindexComponent extends Object {
 		$settings['fields'] = $newFields;
 
 		$this->settings = $settings;
+	}
+
+	function _getDefaultFields($model) {
+		$model_fields = array($model->alias => array_keys($model->schema()));
+		foreach (array('belongsTo', 'hasOne') as $assoc) {
+			foreach ($model->$assoc as $alias => $arr) {
+				$model_fields[$alias] = array_keys($model->$alias->schema());
+			}
+		}
+		$flat = array();
+		foreach ($model_fields as $model => $fields) {
+			foreach ($fields as $field) {
+				$flat[] = $model . '.' . $field;
+			}
+		}
+		return $flat;
 	}
 
 	//called after Controller::beforeFilter()
@@ -156,11 +172,14 @@ class AdvindexComponent extends Object {
 		App::import('Vendor', 'advindex.parseCSV', array('file' => 'parsecsv-0.3.2' . DS . 'parsecsv.lib.php'));
 		$csv = new parseCSV();
 		$return = $csv->output(!$text, $this->controller->name . '.csv', $rows, $this->settings['fields']);
-		Configure::write('debug', 0); // get rid of sql log at the end
 		if ( $text ) {
 			header('Content-type: text/plain');
-			echo $return;
+
 		}
+		else {
+			Configure::write('debug', 0); // get rid of sql log at the end
+		}
+		echo $return;
 		exit;
 	}
 
@@ -200,18 +219,25 @@ class AdvindexComponent extends Object {
 			// start again
 			$model->create();
 
+			// get row
+			$row2 = array();
+			foreach ($row as $field => $val) {
+				$alias = $model->alias;
+				if ( strpos($field, '.') !== false ) {
+					list($alias, $field) = explode('.', $field);
+				}
+				$row2[$alias][$field] = $val;
+			}
+			$row = $row2;
+			unset($row2);
+
 			// format row
 			$modelData = array();
 			if ( $hasBeforeCallback ) {
 				$modelData = $model->beforeImport($row);
 			}
 			else {
-				foreach ($row as $field => $val) {
-					if ( !isset($fields[$field]) ) {
-						continue;
-					}
-					$modelData[$fields[$field]] = trim($val);
-				}
+				$modelData = $row;
 			}
 
 			// try and find an existing row.
