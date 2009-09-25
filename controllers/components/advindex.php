@@ -158,11 +158,15 @@ class AdvindexComponent extends Object {
 			$order = array($this->controller->passedArgs['sort'] => $this->controller->passedArgs['direction']);
 		}
 
-		$rows = $this->controller->$modelName->find('all', compact('conditions', 'order', 'callbacks', 'fields'));
+		$contain = array_merge(array_keys($this->controller->$modelName->belongsTo), array_keys($this->controller->$modelName->hasOne));
+		$rows = $this->controller->$modelName->find('all', compact('conditions', 'order', 'callbacks', 'fields', 'contain')); // for some reason contain has no effect
 		foreach ($rows as &$row) {
 			$newRow = array();
 			foreach ($row as $model => $values) {
 				foreach ($values as $field => $value) {
+					if ( is_array($value) ) {
+						continue; // because contian has no effect we get hasMany and HABTM in the results, which doesnt work with CSV
+					}
 					$newRow[$model . '.' . $field] = $value;
 				}
 			}
@@ -174,12 +178,11 @@ class AdvindexComponent extends Object {
 		$return = $csv->output(!$text, $this->controller->name . '.csv', $rows, $this->settings['fields']);
 		if ( $text ) {
 			header('Content-type: text/plain');
-
+			echo $return;
 		}
 		else {
 			Configure::write('debug', 0); // get rid of sql log at the end
 		}
-		echo $return;
 		exit;
 	}
 
@@ -298,146 +301,4 @@ class AdvindexComponent extends Object {
 	{
 		$id = $this->controller->params['pass'][0];
 		$modelClass = $this->controller->modelClass;
-		$data = $this->controller->data;
-    	if (!$id || !is_numeric($id) || !isset($data[$modelClass]['order']) || !is_numeric($data[$modelClass]['order'])) {
-      		echo 'Invalid Format';
-      		debug($id);
-      		exit;
-    	}
-    	$this->controller->$modelClass->id = $id;
-    	die(json_encode($this->controller->$modelClass->save($data, true, array('order'))));
-	}
-
-	function _getConditions() {
-		$sessionKey = $this->sessionKey;
-		$modelName = $this->modelName;
-		$conditions = array();
-
-		if ( $filter = $this->controller->Session->read($sessionKey) ) {
-
-			foreach ($filter as $field => $keyword) {
-				if ( (empty($keyword) && $keyword !== '0') || !$this->controller->$modelName->hasField($field) ) {
-					continue;
-				}
-
-				if ( isset($this->settings['types'][$field]) ) {
-					$columnType = $this->settings['types'][$field];
-				}
-				else {
-					$columnType = $this->controller->$modelName->getColumnType($field);
-				}
-
-				$field = $modelName . '.' . $field;
-
-				switch ($columnType)
-				{
-					case 'boolean':
-						if ( $keyword ) {
-							$conditions[] = array(
-								'and' => array(
-									array($field . ' NOT' => 0),
-									array($field . ' NOT' => null)
-								)
-							);
-						}
-						else {
-							$conditions[] = array(
-								'or' => array(
-									array($field => 0),
-									array($field => null)
-								)
-							);
-						}
-					break;
-
-					case 'integer':
-						if ( is_array($keyword) ) {
-							$this->_addRange($conditions, $field, $keyword);
-						}
-						else {
-							$conditions[$field] = $keyword;
-						}
-					break;
-
-					case 'datetime':
-					case 'date':
-					case 'time':
-					case 'timestamp':
-						if ( isset($keyword['from']) || isset($keyword['to']) ) {
-							if ( !empty($keyword['from']['date']) ) {
-								$time = strtotime($keyword['from']['date']);
-								$keyword['from']['year'] = date('Y', $time);
-								$keyword['from']['month'] = date('m', $time);
-								$keyword['from']['day'] = date('d', $time);
-							}
-							if ( !empty($keyword['to']['date']) ) {
-								$time = strtotime($keyword['to']['date']);
-								$keyword['to']['year'] = date('Y', $time);
-								$keyword['to']['month'] = date('m', $time);
-								$keyword['to']['day'] = date('d', $time);
-							}
-							$from = $this->controller->$modelName->deconstruct($field, $keyword['from']);
-							$to = $this->controller->$modelName->deconstruct($field, $keyword['to']);
-							$to = str_replace('00:00:00', '23:59:59', $to); // more intuitive to put it at the end of the day
-							$this->_addRange($conditions, $field, compact('from', 'to'));
-						}
-						else {
-							$keyword = $this->controller->$modelName->deconstruct($field, $keyword);
-							// empty dates get through here because of the array so we do a check if the deconstruct
-							// turned it into something useful
-							if ( $keyword ) {
-								$conditions[$field] = $keyword;
-							}
-						}
-					break;
-
-					case 'text':
-					case 'string':
-					default:
-						$conditions[$field . ' LIKE'] = '%' . $keyword . '%';
-					break;
-				}
-			}
-
-		}
-		return $conditions;
-	}
-
-	function _addRange(&$conditions, $field, $fromAndTo)
-	{
-		$hasMin = !empty($fromAndTo['from']) && $fromAndTo['from'] !== '0';
-		$hasMax = !empty($fromAndTo['to']) && $fromAndTo['to'] !== '0';
-
-		// Case 1, min and no max
-		if ( $hasMin && !$hasMax ) {
-			$conditions[$field . ' >='] = $fromAndTo['from'];
-		}
-		// Case 2, max and no min
-		else if ( !$hasMin && $hasMax ) {
-			$conditions[$field . ' <='] = $fromAndTo['to'];
-		}
-		// Case 3, max and min
-		else if ( $hasMin && $hasMax ) {
-			$conditions[$field . ' BETWEEN ? AND ?'] = array($fromAndTo['from'], $fromAndTo['to']);
-		}
-		// Case 4, no min and no max (dont add anything)
-	}
-
-	//called after Controller::beforeRender()
-	function beforeRender(&$controller) {
-	}
-
-	//called after Controller::render()
-	function shutdown(&$controller) {
-	}
-
-	//called before Controller::redirect()
-	function beforeRedirect(&$controller, $url, $status=null, $exit=true) {
-	}
-
-	function redirectSomewhere($value) {
-		// utilizing a controller method
-		$this->controller->redirect($value);
-	}
-}
-?>
+		$data
