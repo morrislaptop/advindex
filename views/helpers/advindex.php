@@ -53,7 +53,9 @@ class AdvindexHelper extends AppHelper {
 		}
 
 		// qualify model.
-		$field = $modelName . '.' . $field;
+		if ( strpos($field, '.') === false ) {
+			$field = $modelName . '.' . $field;
+		}
 
 		// text types just get a textbox.
 		switch ($columnType)

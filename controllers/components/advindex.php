@@ -88,13 +88,16 @@ class AdvindexComponent extends Object {
 
 	function index() {
 
-		if ( isset($this->controller->data[$this->modelName]) ) {
-			$this->controller->Session->write($this->sessionKey, $this->controller->data[$this->modelName]);
+		if ( !empty($this->controller->data) ) {
+			$perPage = $this->controller->data[$this->modelName]['perPage'];
+			unset($this->controller->data[$this->modelName]['perPage']);
+			$this->controller->Session->write($this->sessionKey . '.conditions', $this->controller->data);
+			$this->controller->Session->write($this->sessionKey . '.perPage', $perPage);
 		}
 
 		// Filtering
 		$conditions = $this->_getConditions();
-		$this->controller->data = array($this->modelName => $this->controller->Session->read($this->sessionKey)); // put data to controller so it appears in filter form
+		$this->controller->data = $this->controller->Session->read($this->sessionKey . '.conditions'); // put data to controller so it appears in filter form
 		$this->controller->paginate['conditions'] = $conditions;
 
 		// Per Page
@@ -310,95 +313,98 @@ class AdvindexComponent extends Object {
 
 	function _getConditions() {
 		$sessionKey = $this->sessionKey;
-		$modelName = $this->modelName;
 		$conditions = array();
 
-		if ( $filter = $this->controller->Session->read($sessionKey) ) {
-
-			foreach ($filter as $field => $keyword) {
-				if ( (empty($keyword) && $keyword !== '0') || !$this->controller->$modelName->hasField($field) ) {
-					continue;
-				}
-
-				if ( isset($this->settings['types'][$field]) ) {
-					$columnType = $this->settings['types'][$field];
-				}
-				else {
-					$columnType = $this->controller->$modelName->getColumnType($field);
-				}
-
-				$field = $modelName . '.' . $field;
-
-				switch ($columnType)
+		if ( $models = $this->controller->Session->read($sessionKey . '.conditions') ) 
+		{
+			foreach ($models as $modelName => $filter)
+			{
+				$modelObj = ClassRegistry::getObject($modelName);
+				foreach ($filter as $field => $keyword) 
 				{
-					case 'boolean':
-						if ( $keyword ) {
-							$conditions[] = array(
-								'and' => array(
-									array($field . ' NOT' => 0),
-									array($field . ' NOT' => null)
-								)
-							);
-						}
-						else {
-							$conditions[] = array(
-								'or' => array(
-									array($field => 0),
-									array($field => null)
-								)
-							);
-						}
-					break;
+					if ( empty($keyword) && $keyword !== '0' ) {
+						continue;
+					}
 
-					case 'integer':
-						if ( is_array($keyword) ) {
-							$this->_addRange($conditions, $field, $keyword);
-						}
-						else {
-							$conditions[$field] = $keyword;
-						}
-					break;
+					if ( isset($this->settings['types'][$field]) ) {
+						$columnType = $this->settings['types'][$field];
+					}
+					else {
+						$columnType = $modelObj->getColumnType($field);
+					}
 
-					case 'datetime':
-					case 'date':
-					case 'time':
-					case 'timestamp':
-						if ( isset($keyword['from']) || isset($keyword['to']) ) {
-							if ( !empty($keyword['from']['date']) ) {
-								$time = strtotime($keyword['from']['date']);
-								$keyword['from']['year'] = date('Y', $time);
-								$keyword['from']['month'] = date('m', $time);
-								$keyword['from']['day'] = date('d', $time);
-							}
-							if ( !empty($keyword['to']['date']) ) {
-								$time = strtotime($keyword['to']['date']);
-								$keyword['to']['year'] = date('Y', $time);
-								$keyword['to']['month'] = date('m', $time);
-								$keyword['to']['day'] = date('d', $time);
-							}
-							$from = $this->controller->$modelName->deconstruct($field, $keyword['from']);
-							$to = $this->controller->$modelName->deconstruct($field, $keyword['to']);
-							$to = str_replace('00:00:00', '23:59:59', $to); // more intuitive to put it at the end of the day
-							$this->_addRange($conditions, $field, compact('from', 'to'));
-						}
-						else {
-							$keyword = $this->controller->$modelName->deconstruct($field, $keyword);
-							// empty dates get through here because of the array so we do a check if the deconstruct
-							// turned it into something useful
+					$field = $modelName . '.' . $field;
+
+					switch ($columnType)
+					{
+						case 'boolean':
 							if ( $keyword ) {
+								$conditions[] = array(
+									'and' => array(
+										array($field . ' NOT' => 0),
+										array($field . ' NOT' => null)
+									)
+								);
+							}
+							else {
+								$conditions[] = array(
+									'or' => array(
+										array($field => 0),
+										array($field => null)
+									)
+								);
+							}
+						break;
+
+						case 'integer':
+							if ( is_array($keyword) ) {
+								$this->_addRange($conditions, $field, $keyword);
+							}
+							else {
 								$conditions[$field] = $keyword;
 							}
-						}
-					break;
+						break;
 
-					case 'text':
-					case 'string':
-					default:
-						$conditions[$field . ' LIKE'] = '%' . $keyword . '%';
-					break;
+						case 'datetime':
+						case 'date':
+						case 'time':
+						case 'timestamp':
+							if ( isset($keyword['from']) || isset($keyword['to']) ) {
+								if ( !empty($keyword['from']['date']) ) {
+									$time = strtotime($keyword['from']['date']);
+									$keyword['from']['year'] = date('Y', $time);
+									$keyword['from']['month'] = date('m', $time);
+									$keyword['from']['day'] = date('d', $time);
+								}
+								if ( !empty($keyword['to']['date']) ) {
+									$time = strtotime($keyword['to']['date']);
+									$keyword['to']['year'] = date('Y', $time);
+									$keyword['to']['month'] = date('m', $time);
+									$keyword['to']['day'] = date('d', $time);
+								}
+								$from = $modelObj->deconstruct($field, $keyword['from']);
+								$to = $modelObj->deconstruct($field, $keyword['to']);
+								$to = str_replace('00:00:00', '23:59:59', $to); // more intuitive to put it at the end of the day
+								$this->_addRange($conditions, $field, compact('from', 'to'));
+							}
+							else {
+								$keyword = $modelObj->deconstruct($field, $keyword);
+								// empty dates get through here because of the array so we do a check if the deconstruct
+								// turned it into something useful
+								if ( $keyword ) {
+									$conditions[$field] = $keyword;
+								}
+							}
+						break;
+
+						case 'text':
+						case 'string':
+						default:
+							$conditions[$field . ' LIKE'] = '%' . $keyword . '%';
+						break;
+					}
 				}
 			}
-
 		}
 		return $conditions;
 	}
