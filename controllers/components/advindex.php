@@ -235,12 +235,11 @@ class AdvindexComponent extends Object {
 			unset($row2);
 
 			// format row
-			$modelData = array();
 			if ( $hasBeforeCallback ) {
 				$modelData = $model->beforeImport($row);
 			}
 			else {
-				$modelData = $row;
+				$modelData = $this->genericBeforeImport($row);
 			}
 
 			// try and find an existing row.
@@ -271,6 +270,40 @@ class AdvindexComponent extends Object {
 
 		$this->controller->Session->write('Advindex.' . $this->modelName . '.import', compact('created', 'updated', 'errors'));
 		$this->controller->redirect(array('action' => 'index'));
+	}
+	
+	function genericBeforeImport($row) {
+		// Trim
+		foreach ($row as $model => &$fields) {
+			$fields = array_map('trim', $fields);
+		}
+		
+		// Foreign keys
+		foreach ($row as $model => $fields) {
+			foreach ($fields as $field => $value) {
+				$lookIn = array_merge($this->controller->$model->belongsTo, $this->controller->$model->hasOne);
+				foreach ($lookIn as $alias => $props) {
+					if ( $props['foreignKey'] == $field ) {
+						$row[$model][$field] = $this->findForeignKey($alias, $value);
+					}
+				}
+			}
+		}
+		
+		return $row;
+	}
+	
+	function findForeignKey($model, $value)
+	{
+		$modelObj = ClassRegistry::getObject($model);
+		$conditions = array(
+			$modelObj->displayField => $value
+		);
+		$id = $modelObj->field($modelObj->primaryKey, $conditions);
+		if ( $id ) {
+			return $id;	
+		}
+		return $value;
 	}
 
 	function toggle()
