@@ -177,12 +177,11 @@ class AdvindexComponent extends Object {
 		$return = $csv->output(!$text, $this->controller->name . '.csv', $rows, $this->settings['fields']);
 		if ( $text ) {
 			header('Content-type: text/plain');
-
+			echo $return;
 		}
 		else {
 			Configure::write('debug', 0); // get rid of sql log at the end
 		}
-		echo $return;
 		exit;
 	}
 
@@ -272,19 +271,23 @@ class AdvindexComponent extends Object {
 		$this->controller->redirect(array('action' => 'index'));
 	}
 	
-	function genericBeforeImport($row) {
+	function genericBeforeImport($row) 
+	{
 		// Trim
 		foreach ($row as $model => &$fields) {
 			$fields = array_map('trim', $fields);
 		}
+		unset($model, $fields);
 		
 		// Foreign keys
 		foreach ($row as $model => $fields) {
+			$modelObj = ClassRegistry::getObject($model);
 			foreach ($fields as $field => $value) {
-				$lookIn = array_merge($this->controller->$model->belongsTo, $this->controller->$model->hasOne);
+				$lookIn = array_merge($modelObj->belongsTo, $modelObj->hasOne);
 				foreach ($lookIn as $alias => $props) {
+					$aliasObj = ClassRegistry::getObject($alias);
 					if ( $props['foreignKey'] == $field ) {
-						$row[$model][$field] = $this->findForeignKey($alias, $value);
+						#$row[$model][$field] = $this->findForeignKey($aliasObj, $value);
 					}
 				}
 			}
@@ -293,9 +296,8 @@ class AdvindexComponent extends Object {
 		return $row;
 	}
 	
-	function findForeignKey($model, $value)
+	function findForeignKey($modelObj, $value)
 	{
-		$modelObj = ClassRegistry::getObject($model);
 		$conditions = array(
 			$modelObj->displayField => $value
 		);
