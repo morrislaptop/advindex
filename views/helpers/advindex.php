@@ -14,7 +14,7 @@ class AdvindexHelper extends AppHelper {
 
 	function create($model) {
 		// we have to set the url manually as the id in the form data causes Router errors.
-		return $this->Form->create($model, array('url' => $this->url(array('action' => 'index'))));
+		return $this->Form->create($model, array('url' => array('action' => 'index')));
 	}
 
 	function end() {
