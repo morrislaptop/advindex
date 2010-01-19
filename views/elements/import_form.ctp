@@ -1,7 +1,7 @@
 <?php
 	$sessionKey = 'Advindex.' . $model . '.import';
 	$import = $session->read($sessionKey);
-	$session->del($sessionKey);
+	$session->delete($sessionKey);
 
 	if ( $import )
 	{
