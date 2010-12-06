@@ -1,7 +1,7 @@
 <?php
 class AdvindexHelper extends AppHelper {
 
-	var $helpers = array('Advform.Advform', 'Html', 'Paginator', 'Form', 'Session');
+	var $helpers = array('Html', 'Paginator', 'Form', 'Session');
 
 	/**
 	* @var FormHelper
@@ -22,7 +22,7 @@ class AdvindexHelper extends AppHelper {
 	}
 
 	function search() {
-		return $this->Form->submit('Search');
+		return $this->Form->submit('Search', array('class' => 'submit tiny'));
 	}
 
 	function filter($field, $options = array()) {
@@ -34,22 +34,19 @@ class AdvindexHelper extends AppHelper {
 		// override column type if in the options
 		if ( !empty($options['type']) ) {
 			$columnType = $options['type'];
-			unset($options['type']);
+			#unset($options['type']);
 		}
 		else if ( 'datetime' == $columnType ) {
 			// pretty safe to assume we want to turn date times into dates
 			$columnType = 'date';
 		}
+		else if ( '_id' === substr($field, -strlen('_id')) ) {
+			$columnType = 'foreign';
+		}
 
 		// dont escape by defualt.
 		if ( !isset($options['escape']) ) {
 			$options['escape'] = false;
-		}
-
-		// change integer column types if they are some sort of id.
-		$match = '_id';
-		if ( $match === substr($field, -strlen($match)) ) {
-			$columnType = 'select';
 		}
 
 		// qualify model.
@@ -66,48 +63,49 @@ class AdvindexHelper extends AppHelper {
 					'True'
 				);
 				$options = array_merge(array('type' => 'select', 'label' => false, 'div' => false, 'empty' => true, 'options' => $selOptions), $options);
-				return $this->Advform->input($field, $options);
+				return $this->Form->input($field, $options);
 			break;
 
 			case 'integer':
 			case 'float':
-				$from = $this->Advform->input($field . '.from', array_merge(array('type' => 'text', 'class' => 'range'), $options));
-				$to = $this->Advform->input($field . '.to', array_merge(array('type' => 'text', 'class' => 'range'), $options));
+				$from = $this->Form->input($field . '.from', array_merge(array('type' => 'text', 'class' => 'range'), $options));
+				$to = $this->Form->input($field . '.to', array_merge(array('type' => 'text', 'class' => 'range'), $options));
 				return $from . $to;
 			break;
 
 			case 'date':
-				$from = $this->Advform->input($field . '.from', array('label' => 'From', 'type' => 'calendar'));
-				$to = $this->Advform->input($field . '.to', array('label' => 'To', 'type' => 'calendar'));
+				$from = $this->Form->input($field . '.from', array('label' => 'From', 'type' => 'calendar'));
+				$to = $this->Form->input($field . '.to', array('label' => 'To', 'type' => 'calendar'));
 				return $from . $to;
 			break;
 
 			case 'datetime':
 			case 'timestamp':
-				$from = $this->Advform->input($field . '.from', array('label' => 'From', 'type' => 'calendar'));
-				$fromTime = $this->Advform->input($field . '.from', array('type' => 'time', 'empty' => true, 'label' => false));
-				$to = $this->Advform->input($field . '.to', array('label' => 'To', 'type' => 'calendar'));
-				$toTime = $this->Advform->input($field .'.to', array('type' => 'time', 'empty' => true, 'label' => false));
+				$from = $this->Form->input($field . '.from', array('label' => 'From', 'type' => 'calendar'));
+				$fromTime = $this->Form->input($field . '.from', array('type' => 'time', 'empty' => true, 'label' => false));
+				$to = $this->Form->input($field . '.to', array('label' => 'To', 'type' => 'calendar'));
+				$toTime = $this->Form->input($field .'.to', array('type' => 'time', 'empty' => true, 'label' => false));
 				return $from .$fromTime . $to . $toTime;
 			break;
 
 			case 'time':
 				$options = array_merge(array('empty' => true, 'type' => 'time'), $options);
-				$from = $this->Advform->input($field . '.from', $options);
-				$to = $this->Advform->input($field . '.to', $options);
+				$from = $this->Form->input($field . '.from', $options);
+				$to = $this->Form->input($field . '.to', $options);
 				return $from . $to;
 			break;
 
 			case 'text':
 			case 'string':
+			case 'foreign':
 			default:
-				$options = array_merge(array('type' => 'text', 'label' => false, 'empty' => true), $options);
-				return $this->Advform->input($field, $options);
+				$options = array_merge(array('label' => false, 'empty' => true), $options);
+				return $this->Form->input($field, $options);
 			break;
 		}
 
 
-		return $this->Advform->input($field, $options);
+		return $this->Form->input($field, $options);
 	}
 
 	function export($label) {

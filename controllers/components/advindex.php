@@ -89,7 +89,7 @@ class AdvindexComponent extends Object {
 	function index() {
 
 		if ( !empty($this->controller->data) ) {
-			$perPage = $this->controller->data[$this->modelName]['perPage'];
+			$perPage = !empty($this->controller->data[$this->modelName]['perPage']) ? $this->controller->data[$this->modelName]['perPage'] : 20;
 			unset($this->controller->data[$this->modelName]['perPage']);
 			$this->controller->Session->write($this->sessionKey . '.conditions', $this->controller->data);
 			$this->controller->Session->write($this->sessionKey . '.perPage', $perPage);
