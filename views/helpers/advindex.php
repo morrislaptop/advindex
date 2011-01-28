@@ -34,7 +34,7 @@ class AdvindexHelper extends AppHelper {
 		// override column type if in the options
 		if ( !empty($options['type']) ) {
 			$columnType = $options['type'];
-			#unset($options['type']);
+			unset($options['type']);
 		}
 		else if ( 'datetime' == $columnType ) {
 			// pretty safe to assume we want to turn date times into dates
@@ -74,18 +74,11 @@ class AdvindexHelper extends AppHelper {
 			break;
 
 			case 'date':
-				$from = $this->Form->input($field . '.from', array('label' => 'From', 'type' => 'calendar'));
-				$to = $this->Form->input($field . '.to', array('label' => 'To', 'type' => 'calendar'));
-				return $from . $to;
-			break;
-
 			case 'datetime':
 			case 'timestamp':
-				$from = $this->Form->input($field . '.from', array('label' => 'From', 'type' => 'calendar'));
-				$fromTime = $this->Form->input($field . '.from', array('type' => 'time', 'empty' => true, 'label' => false));
-				$to = $this->Form->input($field . '.to', array('label' => 'To', 'type' => 'calendar'));
-				$toTime = $this->Form->input($field .'.to', array('type' => 'time', 'empty' => true, 'label' => false));
-				return $from .$fromTime . $to . $toTime;
+				$from = $this->Form->input($field . '.from', array('label' => 'From', 'class' => 'text date_picker', 'type' => 'text'));
+				$to = $this->Form->input($field . '.to', array('label' => 'To', 'class' => 'text date_picker', 'type' => 'text'));
+				return $from . $to;
 			break;
 
 			case 'time':
@@ -136,7 +129,7 @@ class AdvindexHelper extends AppHelper {
 	* Returns the columns for the current model.
 	*/
 	function cols() {
-		$model = reset($this->params['models']);
+		$model = $this->model();
 		$var = Inflector::pluralize(Inflector::variable($model));
 		$view = ClassRegistry::getObject('view');
 		$rows = $view->viewVars[$var];

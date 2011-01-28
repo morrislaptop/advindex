@@ -7,7 +7,13 @@
 	<td colspan="<?php echo $cols; ?>" class="footerLeft">
 		<div class="show">
 			Show <?php echo $advindex->perPage(); ?> per page
-			<span>|</span>
+		</div>
+		<div class="counter">
+			<?php
+			echo $paginator->counter(array(
+			'format' => __('Page %page% of %pages%, showing %current% records out of %count% total, starting on record %start%, ending on %end%', true)
+			));
+			?>
 		</div>
 		<div class="paging">
 			<ul>
@@ -21,12 +27,6 @@
 				<li class="next"><?php echo $paginator->next(__('next', true).' >>', array(), null, array('class'=>'disabled'));?></li>
 			</ul>
 		</div>
-		<span>|</span>
-		<?php
-		echo $paginator->counter(array(
-		'format' => __('Page %page% of %pages%, showing %current% records out of %count% total, starting on record %start%, ending on %end%', true)
-		));
-		?>
 	</td>
 	<td class="footerRight">&nbsp;</td>
 </tr>

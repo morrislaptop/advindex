@@ -14,7 +14,7 @@ class AdvindexComponent extends Object {
 	}
 
 	function _initSettings($settings) {
-		$this->modelName = $modelName = reset($this->controller->modelNames);
+		$this->modelName = $modelName = !empty($settings['modelName']) ? $settings['modelName'] : reset($this->controller->modelNames);
 		$this->sessionKey = 'Advindex.' . $this->modelName;
 		$default = array(
 			'fields' => $modelName ? $this->_getDefaultFields($this->controller->$modelName) : array(),
@@ -405,17 +405,21 @@ class AdvindexComponent extends Object {
 						case 'time':
 						case 'timestamp':
 							if ( isset($keyword['from']) || isset($keyword['to']) ) {
-								if ( !empty($keyword['from']['date']) ) {
-									$time = strtotime($keyword['from']['date']);
-									$keyword['from']['year'] = date('Y', $time);
-									$keyword['from']['month'] = date('m', $time);
-									$keyword['from']['day'] = date('d', $time);
+								if ( !empty($keyword['from']) ) {
+									$time = strtotime($keyword['from']);
+									$keyword['from'] = array(
+										'year' => date('Y', $time),
+										'month' => date('m', $time),
+										'day' => date('d', $time)
+									);
 								}
-								if ( !empty($keyword['to']['date']) ) {
-									$time = strtotime($keyword['to']['date']);
-									$keyword['to']['year'] = date('Y', $time);
-									$keyword['to']['month'] = date('m', $time);
-									$keyword['to']['day'] = date('d', $time);
+								if ( !empty($keyword['to']) ) {
+									$time = strtotime($keyword['to']);
+									$keyword['to'] = array(
+										'year' => date('Y', $time),
+										'month' => date('m', $time),
+										'day' => date('d', $time)
+									);
 								}
 								$from = $modelObj->deconstruct($field, $keyword['from']);
 								$to = $modelObj->deconstruct($field, $keyword['to']);
