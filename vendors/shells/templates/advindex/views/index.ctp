@@ -29,16 +29,16 @@
 ?>
 <div class="<?php echo $pluralVar;?> index">
 <h2><?php echo "<?php __('{$pluralHumanName}');?>";?></h2>
-<p><?php echo "<?php echo \$advindex->export('Export as CSV'); ?> | <?php echo \$html->link('Import from CSV', '#', array('onclick' => \"\$('#{$modelClass}ImportForm').toggle();\")); ?></p>\n"; ?>
+<p><?php echo "<?php echo \$this->Advindex->export('Export as CSV'); ?> | <?php echo \$this->Html->link('Import from CSV', '#', array('onclick' => \"\$('#{$modelClass}ImportForm').toggle();\")); ?></p>\n"; ?>
 <?php echo "<?php echo \$this->element('import_form', array('plugin' => 'advindex', 'model' => '{$modelClass}')); ?>\n"; ?>
-<?php echo "<?php echo \$advindex->create('{$singularHumanName}'); ?>\n"; ?>
+<?php echo "<?php echo \$this->Advindex->create('{$singularHumanName}'); ?>\n"; ?>
 <table cellpadding="0" cellspacing="0">
 <thead>
 	<tr>
 <?php
 	$first = true;
 	foreach ($fields as $field) {
-		echo "\t\t<th" . ($first ? ' class="headerLeft"' : '') . "><?php echo \$paginator->sort('{$field}'); ?></th>\n";
+		echo "\t\t<th" . ($first ? ' class="headerLeft"' : '') . "><?php echo \$this->Paginator->sort('{$field}'); ?></th>\n";
 		$first = false;
 	}
 ?>
@@ -47,10 +47,10 @@
 	<tr class="filter">
 <?php
 	foreach ($fields as $field) {
-		echo "\t\t<td><?php echo \$advindex->filter('{$field}'); ?></td>\n";
+		echo "\t\t<td><?php echo \$this->Advindex->filter('{$field}'); ?></td>\n";
 	}
 ?>
-		<td<?php echo $hasOrder ? ' colspan="2"' : ''; ?>><?php echo "<?php echo \$advindex->search(); ?>"; ?></td>
+		<td<?php echo $hasOrder ? ' colspan="2"' : ''; ?>><?php echo "<?php echo \$this->Advindex->search(); ?>"; ?></td>
 	</tr>
 </thead>
 <tbody>
@@ -71,7 +71,7 @@ foreach (\${$pluralVar} as \${$singularVar}):
 				foreach ($associations['belongsTo'] as $alias => $details) {
 					if ($field === $details['foreignKey']) {
 						$isKey = true;
-						echo "\t\t<td>\n\t\t\t<?php echo \$html->link(\${$singularVar}['{$alias}']['{$details['displayField']}'], array('controller'=> '{$details['controller']}', 'action'=>'view', \${$singularVar}['{$alias}']['{$details['primaryKey']}'])); ?>\n\t\t</td>\n";
+						echo "\t\t<td>\n\t\t\t<?php echo \$this->Html->link(\${$singularVar}['{$alias}']['{$details['displayField']}'], array('controller'=> '{$details['controller']}', 'action'=>'view', \${$singularVar}['{$alias}']['{$details['primaryKey']}'])); ?>\n\t\t</td>\n";
 						break;
 					}
 				}
@@ -82,13 +82,13 @@ foreach (\${$pluralVar} as \${$singularVar}):
 		}
 
 		if ( $hasOrder ) {
-			echo "\t\t<td class=\"dragHandle\"><?php echo \$html->image('/advindex/img/drag_handle.gif', array('alt' => 'Drag', 'style' => 'cursor: move;')); ?></td>\n";
+			echo "\t\t<td class=\"dragHandle\"><?php echo \$this->Html->image('/advindex/img/drag_handle.gif', array('alt' => 'Drag', 'style' => 'cursor: move;')); ?></td>\n";
 		}
 
 		echo "\t\t<td class=\"actions\">\n";
-		echo "\t\t\t<?php echo \$html->link(__('View', true), array('action'=>'view', \${$singularVar}['{$modelClass}']['{$primaryKey}'])); ?>\n";
-	 	echo "\t\t\t<?php echo \$html->link(__('Edit', true), array('action'=>'edit', \${$singularVar}['{$modelClass}']['{$primaryKey}'])); ?>\n";
-	 	echo "\t\t\t<?php echo \$html->link(__('Delete', true), array('action'=>'delete', \${$singularVar}['{$modelClass}']['{$primaryKey}']), null, sprintf(__('Are you sure you want to delete # %s?', true), \${$singularVar}['{$modelClass}']['{$primaryKey}'])); ?>\n";
+		echo "\t\t\t<?php echo \$this->Html->link(__('View', true), array('action'=>'view', \${$singularVar}['{$modelClass}']['{$primaryKey}'])); ?>\n";
+	 	echo "\t\t\t<?php echo \$this->Html->link(__('Edit', true), array('action'=>'edit', \${$singularVar}['{$modelClass}']['{$primaryKey}'])); ?>\n";
+	 	echo "\t\t\t<?php echo \$this->Html->link(__('Delete', true), array('action'=>'delete', \${$singularVar}['{$modelClass}']['{$primaryKey}']), null, sprintf(__('Are you sure you want to delete # %s?', true), \${$singularVar}['{$modelClass}']['{$primaryKey}'])); ?>\n";
 		echo "\t\t</td>\n";
 	echo "\t</tr>\n";
 
@@ -102,6 +102,6 @@ echo "<?php endforeach; ?>\n";
 </div>
 <div class="actions">
 	<ul>
-		<li><?php echo "<?php echo \$html->link(__('New {$singularHumanName}', true), array('action'=>'add')); ?>";?></li>
+		<li><?php echo "<?php echo \$this->Html->link(__('New {$singularHumanName}', true), array('action'=>'add')); ?>";?></li>
 	</ul>
 </div>
