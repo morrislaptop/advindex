@@ -3,7 +3,7 @@
 		$cols = $include;
 	}
 	else {
-		$cols = $advindex->cols();
+		$cols = $this->Advindex->cols();
 		if ( isset($exclude) ) {
 			$cols = array_diff($cols, $exclude);
 		}
@@ -47,9 +47,9 @@
 				$filterOptions = $options[$col]['filter'];
 			}
 			?>
-			<td><?php echo $advindex->filter($col, $filterOptions); ?></td>
+			<td><?php echo $this->Advindex->filter($col, $filterOptions); ?></td>
 			<?php
 		}
 	?>
-	<td><?php echo $advindex->search(); ?></td>
+	<td><?php echo $this->Advindex->search(); ?></td>
 </tr>
