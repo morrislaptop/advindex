@@ -55,12 +55,18 @@ class AdvindexComponent extends Object {
 	}
 
 	//called after Controller::beforeFilter()
-	function startup(&$controller) {
+	function startup(&$controller) 
+	{
 		$action = $controller->params['action'];
 
 		// Methods we assist with here - we dont need to take over
 		if ( in_array($action, array('index', 'admin_index')) ) {
 			$this->index();
+			$this->beforeScaffold();
+			return;
+		}
+		if ( in_array($action, array('add', 'edit', 'admin_add', 'admin_edit')) ) {
+			$this->beforeScaffold();
 			return;
 		}
 		if ( in_array($action, array('toggle', 'admin_toggle')) ) {
@@ -85,9 +91,48 @@ class AdvindexComponent extends Object {
 			}
 		}
 	}
+	
+	function beforeScaffold()
+	{			
+		// Get associated records for drop down fields and the like
+		$model = $this->controller->{$this->modelName};
+		foreach ($model->belongsTo as $assocName => $assocData) {
+			$varName = Inflector::variable(Inflector::pluralize(
+				preg_replace('/(?:_id)$/', '', $assocData['foreignKey'])
+			));
+			$this->controller->set($varName, $model->{$assocName}->find('list'));
+		}
+		foreach ($model->hasAndBelongsToMany as $assocName => $assocData) {
+			$varName = Inflector::variable(Inflector::pluralize($assocName));
+			$this->controller->set($varName, $model->{$assocName}->find('list'));
+		}
+		
+		// Upload fields
+		if ( !empty($model->actsAs['Uploader.Attachment']) ) 
+		{
+			// For telling the form to use file fields.
+			$upload_fields = array_keys($model->actsAs['Uploader.Attachment']);
+			
+			// So it doesn't wipe.
+			if ( !empty($this->controller->data) )
+			{
+				foreach ($upload_fields as $field)
+				{	
+		            if ( UPLOAD_ERR_OK !== $this->controller->data[$this->modelName][$field]['error'] ) {
+		                unset($this->controller->data[$this->modelName][$field]);
+		            }
+				}
+			}
+			
+			// Set to view so it knows to use a file upload
+			$this->controller->set(compact('upload_fields'));
+		}
+		
+		return true;
+	}
 
-	function index() {
-
+	function index() 
+	{
 		if ( !empty($this->controller->data) ) {
 			$perPage = !empty($this->controller->data[$this->modelName]['perPage']) ? $this->controller->data[$this->modelName]['perPage'] : 20;
 			unset($this->controller->data[$this->modelName]['perPage']);
