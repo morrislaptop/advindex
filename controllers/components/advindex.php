@@ -57,6 +57,10 @@ class AdvindexComponent extends Object {
 	//called after Controller::beforeFilter()
 	function startup(&$controller) 
 	{
+		// don't run if we aren't in the admin area.
+		if ( empty($controller->params['admin']) ) {
+			return;
+		}
 		$action = $controller->params['action'];
 
 		// Methods we assist with here - we dont need to take over
