@@ -147,7 +147,7 @@ class AdvindexComponent extends Object {
 		// Filtering
 		$conditions = $this->_getConditions();
 		$this->controller->data = $this->controller->Session->read($this->sessionKey . '.conditions'); // put data to controller so it appears in filter form
-		$this->controller->paginate['conditions'] = $conditions;
+		$this->controller->paginate = compact('conditions');
 
 		// Per Page
 		$perPageKey = $this->sessionKey . '.perPage';
