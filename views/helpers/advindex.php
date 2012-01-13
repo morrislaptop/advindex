@@ -1,7 +1,7 @@
 <?php
 class AdvindexHelper extends AppHelper {
 
-	var $helpers = array('Html', 'Paginator', 'Form', 'Session');
+	var $helpers = array('Html', 'Paginator', 'Form', 'Session', 'Text');
 
 	/**
 	* @var FormHelper
@@ -11,6 +11,7 @@ class AdvindexHelper extends AppHelper {
 	* @var AdvformHelper
 	*/
 	var $AdvformHelper;
+    var $pluginFolder;
 
 	function create($model) {
 		// we have to set the url manually as the id in the form data causes Router errors.
@@ -26,6 +27,9 @@ class AdvindexHelper extends AppHelper {
 	}
 
 	function filter($field, $options = array()) {
+        $options = array_merge(array(
+            'fromTo' => true
+        ),$options);
 		$this->setEntity($field);
 		$modelName = $this->model();
 		$model =& ClassRegistry::getObject($modelName);
@@ -68,24 +72,37 @@ class AdvindexHelper extends AppHelper {
 
 			case 'integer':
 			case 'float':
-				$from = $this->Form->input($field . '.from', array_merge(array('type' => 'text', 'class' => 'range'), $options));
-				$to = $this->Form->input($field . '.to', array_merge(array('type' => 'text', 'class' => 'range'), $options));
-				return $from . $to;
+                if ( $options['fromTo'] ) {
+				    $from = $this->Form->input($field . '.from', array_merge(array('type' => 'text', 'class' => 'range'), $options));
+				    $to = $this->Form->input($field . '.to', array_merge(array('type' => 'text', 'class' => 'range'), $options));
+				    return $from . $to;
+                } else {
+                    return $this->Form->input($field . '.from', array_merge(array('label' => false, 'type' => 'text', 'class' => 'range'), $options));
+                }
 			break;
 
 			case 'date':
 			case 'datetime':
 			case 'timestamp':
-				$from = $this->Form->input($field . '.from', array('label' => 'From', 'class' => 'text date_picker', 'type' => 'text'));
-				$to = $this->Form->input($field . '.to', array('label' => 'To', 'class' => 'text date_picker', 'type' => 'text'));
-				return $from . $to;
+                if ( $options['fromTo'] ) {
+				    $from = $this->Form->input($field . '.from', array('label' => 'From', 'class' => 'text date_picker', 'type' => 'text'));
+				    $to = $this->Form->input($field . '.to', array('label' => 'To', 'class' => 'text date_picker', 'type' => 'text'));
+				    return $from . $to;
+                } else {
+                    return $this->Form->input($field . '.from', array('label' => false, 'class' => 'text date_picker', 'type' => 'text'));
+                }
 			break;
 
 			case 'time':
-				$options = array_merge(array('empty' => true, 'type' => 'time'), $options);
-				$from = $this->Form->input($field . '.from', $options);
-				$to = $this->Form->input($field . '.to', $options);
-				return $from . $to;
+                if ( $options['fromTo'] ) {
+				    $options = array_merge(array('empty' => true, 'type' => 'time'), $options);
+				    $from = $this->Form->input($field . '.from', $options);
+				    $to = $this->Form->input($field . '.to', $options);
+				    return $from . $to;
+                } else {
+                    $options = array_merge(array('label' => false, 'empty' => true, 'type' => 'time'), $options);
+                    return $this->Form->input($field . '.from', $options);
+                }
 			break;
 
 			case 'text':
@@ -143,5 +160,14 @@ class AdvindexHelper extends AppHelper {
 		}
 		return $cols;
 	}
+    
+    function templateOutput($tpl){
+        $view = str_replace(APP,'',$tpl);
+        $plugin = str_replace(APP.'plugins'.DS,'',__FILE__);
+        $plugin = substr($plugin,0,strpos($plugin,DS));
+        echo $view.';'.$plugin;
+        //echo __FILE__.APP.';'.$tpl;
+        //echo __FILE__.APP.';'.$tpl;
+    }
 }
 ?>

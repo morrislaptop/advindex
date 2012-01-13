@@ -1,0 +1,1 @@
+<?php require_once( APP . 'plugins' . DS . 'advindex' . DS . 'views' . DS . 'layouts' . DS . 'default.ctp' ); ?>
