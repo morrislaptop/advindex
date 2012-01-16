@@ -1,1 +1,10 @@
 Copy contents of "copy" into your app folder.
+
+Copy over the content from app_controller.php.example in to your app/app_controller.php.
+
+Setup your bootstrap Config scaffold variable, see example in bootstrap.php.example.
+
+Include the following in your controller:
+
+var $helpers = array('Advindex.Advindex');
+var $components = array('Advindex.Advindex');

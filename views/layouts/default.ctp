@@ -64,7 +64,7 @@ if(empty($this->plugin)){
                     $links = array();
                     foreach ($controllers as $c)
                     {
-                        if ( in_array($c, array('App', 'Bake', 'Import', 'Tab', 'Tasks', 'Home', 'Cuts')) ) {
+                        if ( in_array($c, array('App', 'Bake', 'Import', 'Tab', 'Tasks', 'Home', 'Cuts', 'Pages')) ) {
                             continue;
                         }
                         $class = '';
