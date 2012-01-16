@@ -16,50 +16,12 @@
  * @since         CakePHP(tm) v 0.10.0.1076
  * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-
-$scaffold = Configure::read('scaffold');
-if(!empty($scaffold[$modelClass][$this->params['action']])){
-    $structure = $scaffold[$modelClass][$this->params['action']];
-    $errors = array();
-    foreach($structure as $k => $v){
-        if(substr($k,0,strlen('_special_')) == '_special_'){ // Special field
-            
-        }elseif(is_integer($k) || in_array($k,$scaffoldFields)){ // Normal field OR Field with options
-            if(!in_array($v,$scaffoldFields) && !in_array($k,$scaffoldFields) && $v != 'actions'){  // Doesn't exist
-                unset($structure[$k]);
-                $errors[] = 'Field "'.$v.'" doesn\'t exist so it was removed';
-            }
-        }else{ // Group of fields
-            foreach($structure[$k] as $gk => $gv){
-                if(is_integer($gk) || in_array($gk,$scaffoldFields)){ // Normal field OR Field with options
-                    if(!in_array($gv,$scaffoldFields) && !in_array($gk,$scaffoldFields)){  // Doesn't exist
-                        unset($structure[$k][$gk]);
-                        debug('Field "'.$k.'->'.$gv.'" doesn\'t exist so it was removed');
-                    }
-                }else{  // Doesn't exist
-                    unset($structure[$k][$gk]);
-                    $errors[] = 'Field "'.$k.'->'.$gk.'" doesn\'t exist so it was removed';
-                }
-            }
-        }
-    }
-    if(count($errors) > 0){
-        debug(implode('<br/>',$errors).'<br/><br/>These are the fields available for $structure[\''.$modelClass.'\']:<br/>'.print_r($scaffoldFields,true));
-    }
-    if(!count($structure) > 0){
-        $structure = $scaffoldFields;
-        $structure[] = 'actions'; // Add actions in so they show up
-    }
-}else{
-    $structure = $scaffoldFields;
-    $structure[] = 'actions'; // Add actions in so they show up
-}
-//debug($this->data);
-//debug($types);
+$this->Advindex->setTemplateVariables($scaffold, $structure, $scaffoldFields, $modelClass);
 ?>
-<div class="<?php echo $pluralVar;?> index">
+<div class="<?php echo $pluralVar;?> index main">
 <h2><?php echo $pluralHumanName;?></h2>
 <?php echo $this->Advindex->create($modelClass); ?>
+<div id="filler"></div>
 <table cellpadding="0" cellspacing="0">
 <thead>
 <tr>
@@ -123,27 +85,7 @@ echo "\n";
         foreach ($structure as $k => $v) {
             if(substr($k,0,strlen('_special_')) == '_special_'){
                 echo "\t\t<td>\n\t\t\t";
-                if(!empty($structure[$k]['image'])){
-                    $path = '';
-                    foreach($structure[$k]['image'] as $part){
-                        if(!empty(${$singularVar}[$modelClass][$part])){
-                            $path .= ${$singularVar}[$modelClass][$part];
-                        }else{
-                            $path .= $part;
-                        }
-                    }
-                    echo '<img src="'.$path.'" />';
-                }elseif(!empty($structure[$k]['html'])){
-                    $output = '';
-                    foreach($structure[$k]['html'] as $part){
-                        if(!empty(${$singularVar}[$modelClass][$part])){
-                            $output .= ${$singularVar}[$modelClass][$part];
-                        }else{
-                            $output .= $part;
-                        }
-                    }
-                    echo $output;
-                }
+                echo $this->Advindex->getOutputSpecial($structure[$k], ${$singularVar}[$modelClass]);
                 echo " \n\t\t</td>\n";
             }elseif(!is_array($v) && strtolower($v) == 'actions'){
                 echo "\t\t<td class=\"actions\">\n";
@@ -180,31 +122,7 @@ echo "\n";
                     }
                 }
                 if ($isKey !== true) {
-                    if(is_array($structure[$k]) && isset($structure[$k]['call_user_func'])){
-                        echo call_user_func($structure[$k]['call_user_func'],${$singularVar}[$modelClass][$_field]);
-                    }elseif(is_array($structure[$k]) && !empty($structure[$k]['switch'])){
-                        if(isset($structure[$k]['switch'][${$singularVar}[$modelClass][$_field]])){
-                            echo $structure[$k]['switch'][${$singularVar}[$modelClass][$_field]];
-                        }else{
-                            echo ${$singularVar}[$modelClass][$_field];
-                        }
-                    }elseif(isset($structure[$k]['formatDateTime']) && $structure[$k]['formatDateTime'] === true){
-                        echo $this->Time->niceShort(${$singularVar}[$modelClass][$_field]);
-                    }elseif(isset($structure[$k]['yesno']) && $structure[$k]['yesno'] === true){
-                        echo (${$singularVar}[$modelClass][$_field] == 0?'No':(${$singularVar}[$modelClass][$_field] == 1?'Yes':${$singularVar}[$modelClass][$_field]));
-                    }elseif(!empty($structure[$k]['html']) && is_array($structure[$k]['html'])){
-                        $output = '';
-                        foreach($structure[$k]['html'] as $part){
-                            if(!empty(${$singularVar}[$modelClass][$part])){
-                                $output .= ${$singularVar}[$modelClass][$part];
-                            }else{
-                                $output .= $part;
-                            }
-                        }
-                        echo $output;
-                    }else{
-                        echo $this->Text->autoLink(${$singularVar}[$modelClass][$_field]);
-                    }
+                    echo $this->Advindex->getOutput($structure[$k], ${$singularVar}[$modelClass], $_field);
                 }
                 echo " \n\t\t</td>\n";
             }else{  // Group of fields
@@ -235,17 +153,7 @@ echo "\n";
                             }
                         }
                         if ($isKey !== true) {
-                            if(is_array($structure[$k][$gk]) && isset($structure[$k][$gk]['call_user_func'])){
-                                echo call_user_func($structure[$k][$gk]['call_user_func'],${$singularVar}[$modelClass][$_field]);
-                            }elseif(is_array($structure[$k][$gk]) && !empty($structure[$k][$gk]['switch'])){
-                                if(isset($structure[$k][$gk]['switch'][${$singularVar}[$modelClass][$_field]])){
-                                    echo $structure[$k][$gk]['switch'][${$singularVar}[$modelClass][$_field]];
-                                }else{
-                                    echo ${$singularVar}[$modelClass][$_field];
-                                }
-                            }else{
-                                echo $this->Text->autoLink(${$singularVar}[$modelClass][$_field]);
-                            }
+                            echo $this->Advindex->getOutput($structure[$k][$gk], ${$singularVar}[$modelClass], $_field);
                         }
                         echo " \n\t\t<br/>\n";
                     }
@@ -269,41 +177,5 @@ echo "\n";
         </div>
         <div id="csv"><?php echo $this->Advindex->export('Export as CSV'); ?></div>
     </div>
-</div>
-<div class="actions">
-    <?php /*<h3><?php __('Menu'); ?></h3>
-    <ul>
-        <li>
-            <?php
-                $controllers = App::objects('controller');
-                $links = array();
-                foreach ($controllers as $c)
-                {
-                    if ( in_array($c, array('App', 'Pages', 'Bake', 'Import', 'Tab', 'Tasks', 'Home', 'Cuts')) ) {
-                        continue;
-                    }
-                    $links[] = $this->Html->link(Inflector::humanize(Inflector::underscore($c)), array('controller' => Inflector::underscore($c), 'action' => 'index'));
-                }
-                $links[] = $this->Html->link('Settings', array('plugin' => 'settings', 'controller' => 'configs', 'action' => 'index'));
-                echo implode('</li><li>', $links);
-            ?>
-        </li>
-    </ul>
-    <hr /> */ ?>
-    <h3><?php __('Actions'); ?></h3>
-    <ul>
-        <?php if(empty($scaffold[$modelClass]['restrict']['actions']) || !in_array('add',$scaffold[$modelClass]['restrict']['actions'])){ ?><li><?php echo $this->Html->link(sprintf(__('New %s', true), $singularHumanName), array('action' => 'add')); ?></li><?php } ?>
-<?php
-        $done = array();
-        foreach ($associations as $_type => $_data) {
-            foreach ($_data as $_alias => $_details) {
-                if ($_details['controller'] != $this->name && !in_array($_details['controller'], $done)) {
-                    echo "\t\t<li>" . $this->Html->link(sprintf(__('List %s', true), Inflector::humanize($_details['controller'])), array('controller' => $_details['controller'], 'action' => 'index')) . "</li>\n";
-                    if(empty($scaffold[$_alias]['restrict']['actions']) || !in_array('add',$scaffold[$_alias]['restrict']['actions'])){echo "\t\t<li>" . $this->Html->link(sprintf(__('New %s', true), Inflector::humanize(Inflector::underscore($_alias))), array('controller' => $_details['controller'], 'action' => 'add')) . "</li>\n";}
-                    $done[] = $_details['controller'];
-                }
-            }
-        }
-?>
-    </ul>
+    <div class="clear"></div>
 </div>

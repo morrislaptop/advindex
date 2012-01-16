@@ -1,0 +1,248 @@
+<?php
+
+/**
+ * CakePHP Admin generator
+ * 
+ * @author Blake Kus <blake.kus@ideaworks.com.au>
+ * @date 2012-01-16
+ * 
+ * CHANGELOG:
+ * 0.2 2012-01-16
+ * Merged in to Craig Morris' Advindex as it realies on it
+ * Created 'format' option and merge formatDateTime into it, and add json option
+ * Created output functions in Advindex to handle the options for output so it has one code base
+ * Created setTemplateVariables function to set common variables in the templates
+ * Created config option in $scaffold to put in header with project information
+ * Made AdminWorks standalone in Advindex, all files and css are bundled together
+ * Removed need for Javascript on cdn - updated templates to accommodate
+ * 
+ * 0.1 2011-10-31
+ * Initial release
+ * 
+ * If Configure::write('scaffold') with model and action is not set it will use the default fields
+ * 
+ * If Configure::write('scaffold') with model and action is set it will overwrite the default fields
+ * 
+ * Configure::write('scaffold') with model and action must be an array with fields set as values, if you want a group of fields set the key as what you want it to
+ * display as (must not be an existing field name) with an array of fields to group by
+ * 
+ * Include 'actions' in the fields for where you want the actions column to show
+ * 
+ * You may specify a field as a key and have an array as the value with options for the field
+ * Supported options:
+ * switch => array('0'=>'No','1'=>'Yes')
+ * yesno => true - If value is 0 or 1 it will display no / yes
+ * format => <value> - dateTime = short date time, json = json formated as an array
+ * call_user_func => function
+ * select => array of options
+ * disabled => true OR field type ie 'text' to force textbox
+ * showIf => array('showIf' => array(<field> => <value>), 'display (optional)' => 'nextToSubmit') - will display field if it equals value and display next to submit button
+ * 
+ * Any fields that are in $structure that do not exist will be flagged and shown in a debug message
+ * 
+ * Special fields:
+ * Prefix a field with _special_ and you can generate html from it with the parts of the html in an array.
+ * If a value is a field, it will pull the data and substitute it in.
+ * Options:
+ * image => array('http://graph.facebook.com/','facebook_id','/picture') will output an image of a Facebook page
+ * html => array('<a href="http://www.facebook.com/event.php?eid=','event_id','">Link</a>') will output a link to a Facebook event
+ * 
+ * Other variables in $structure:
+ * Used to display logo/project information in the header
+ * 'config' => array(
+ *      'company' => 'Colgate',
+ *      'project' => 'Smiles',
+ *      'job_number' => 'SCPO0534',
+ *      'fb_id' => 'ColgateAustralia',
+ *      'image' => ''
+ * )
+ * Used to add a link to the navigation
+ * 'admin' => array(
+ *      'addLinks' => array(
+ *          'Import' => array(
+ *              'controller' => 'pages',
+ *              'action' => 'admin_import'
+ *          )
+ *      )
+ * )
+ * 
+ * Other variables for a model
+ * Used to restrict actions from admin
+ * 'restrict' => array(
+ *      'actions' => array('add','delete')
+ * )
+ * 
+ * @example
+ * 
+ *   Configure::write('scaffold', array(
+ *       'config' => array(
+ *           'company' => 'Colgate',
+ *           'project' => 'Smiles',
+ *           'job_number' => 'SCPO0534',
+ *           'fb_id' => 'ColgateAustralia',
+ *           'image' => ''
+ *       ),
+ *       'Photo' => array(
+ *           'index' => array(
+ *               'id',
+ *               'fbid' => array('html' => array(
+ *                   '<a href="',
+ *                   'http://www.facebook.com/',
+ *                   'fbid',
+ *                   '" target="_blank"><img src="https://graph.facebook.com/',
+ *                   'fbid',
+ *                   '/picture" /></a>'
+ *               )),
+ *               'visible' => array(
+ *                   'switch' => array(
+ *                       '0' => '<img src="/advindex/images/cross.png" />',
+ *                       '1' => '<img src="/advindex/images/tick.png" />'
+ *                   )
+ *               ),
+ *               'name',
+ *               'filename',
+ *               'caption',
+ *               'thumb_url' => array('html' => array(
+ *                   '<a href="',
+ *                   'url',
+ *                   '" target="_blank"><img src="',
+ *                   'thumb_url',
+ *                   '" /></a>'
+ *               )),
+ *               'created' => array('format' => 'dateTime'),
+ *               'actions'
+ *           ),
+ *           'edit' => array(
+ *               '_special_image' => array('html' => array(
+ *                   '<a href="',
+ *                   'url',
+ *                   '" target="_blank"><img src="',
+ *                   'thumb_url',
+ *                   '" /></a>'
+ *               )),
+ *               'id',
+ *               'visible',
+ *               'name',
+ *               'filename',
+ *               'caption',
+ *               'created' => array('disabled' => true)
+ *           ),
+ *           'view' => array(
+ *               'id',
+ *               'fbid' => array('html' => array(
+ *                   '<a href="',
+ *                   'http://www.facebook.com/',
+ *                   'fbid',
+ *                   '" target="_blank"><img src="https://graph.facebook.com/',
+ *                   'fbid',
+ *                   '/picture" /></a>'
+ *               )),
+ *               'visible' => array(
+ *                   'switch' => array(
+ *                       '0' => '<img src="/advindex/images/cross.png" />',
+ *                       '1' => '<img src="/advindex/images/tick.png" />'
+ *                   )
+ *               ),
+ *               'name',
+ *               'filename',
+ *               'caption',
+ *               'thumb_url' => array('html' => array(
+ *                   '<a href="',
+ *                   'url',
+ *                   '" target="_blank"><img src="',
+ *                   'thumb_url',
+ *                   '" /></a>'
+ *               )),
+ *               'created' => array('format' => 'dateTime'),
+ *               'exif' => array('format' => 'json')
+ *           ),
+ *       )
+ *   ));
+ */
+
+Configure::write('scaffold', array(
+    'config' => array(
+        'company' => 'Colgate',
+        'project' => 'Smiles',
+        'job_number' => 'SCPO0534',
+        'fb_id' => 'ColgateAustralia',
+        'image' => ''
+    ),
+    'Photo' => array(
+        'index' => array(
+            'id',
+            'fbid' => array('html' => array(
+                '<a href="',
+                'http://www.facebook.com/',
+                'fbid',
+                '" target="_blank"><img src="https://graph.facebook.com/',
+                'fbid',
+                '/picture" /></a>'
+            )),
+            'visible' => array(
+                'switch' => array(
+                    '0' => '<img src="/advindex/images/cross.png" />',
+                    '1' => '<img src="/advindex/images/tick.png" />'
+                )
+            ),
+            'name',
+            'filename',
+            'caption',
+            'thumb_url' => array('html' => array(
+                '<a href="',
+                'url',
+                '" target="_blank"><img src="',
+                'thumb_url',
+                '" /></a>'
+            )),
+            'created' => array('format' => 'dateTime'),
+            'actions'
+        ),
+        'edit' => array(
+            '_special_image' => array('html' => array(
+                '<a href="',
+                'url',
+                '" target="_blank"><img src="',
+                'thumb_url',
+                '" /></a>'
+            )),
+            'id',
+            'visible',
+            'name',
+            'filename',
+            'caption',
+            'created' => array('disabled' => true)
+        ),
+        'view' => array(
+            'id',
+            'fbid' => array('html' => array(
+                '<a href="',
+                'http://www.facebook.com/',
+                'fbid',
+                '" target="_blank"><img src="https://graph.facebook.com/',
+                'fbid',
+                '/picture" /></a>'
+            )),
+            'visible' => array(
+                'switch' => array(
+                    '0' => '<img src="/advindex/images/cross.png" />',
+                    '1' => '<img src="/advindex/images/tick.png" />'
+                )
+            ),
+            'name',
+            'filename',
+            'caption',
+            'thumb_url' => array('html' => array(
+                '<a href="',
+                'url',
+                '" target="_blank"><img src="',
+                'thumb_url',
+                '" /></a>'
+            )),
+            'created' => array('format' => 'dateTime'),
+            'exif' => array('format' => 'json')
+        ),
+    )
+));
+
+?>

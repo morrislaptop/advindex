@@ -16,6 +16,9 @@
  * @since         CakePHP(tm) v 0.10.0.1076
  * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
+if(empty($this->plugin)){
+    $this->Advindex->setTemplateVariables($scaffold, $structure, $scaffoldFields, $modelClass);
+}
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -29,8 +32,7 @@
         echo $this->Html->meta('icon');
 
         echo $this->Html->css('cake.generic');
-        echo $this->Html->css('http://www.ideaworks.com.au/shoulder/css/ideaworks.css');
-        echo $this->Html->script('http://www.ideaworks.com.au/shoulder/js/init.js', array('id'=>'job-SCPO0534'));
+        echo $this->Html->css('/advindex/css/style.css');
 
         echo $scripts_for_layout;
     ?>
@@ -38,29 +40,59 @@
 <body>
     <div id="container">
         <div id="header">
-            <ul id="info"></ul>
-            <ul id="menu">
-                <li>
+            <?php
+                $config = Configure::read('scaffold.config');
+                if(!empty($config)){
+                    if(!empty($config['fb_id'])){
+                        $image = '<a href="https://www.facebook.com/'.$config['fb_id'].'" target="_blank"><img src="https://graph.facebook.com/'.$config['fb_id'].'/picture" /></a>';
+                    }else{
+                        $image = '<a href="http://www.ideaworks.com.au" target="_blank"><img src="'.$config['fb_id'].'" /></a>';
+                    }
+                    ?>
+                    <ul id="info">
+                        <li class="image"><?php echo $image; ?></li>
+                        <li class="name"><?php echo $config['company']; ?></li>
+                        <li class="description"><?php echo $config['project']; ?></li>
+                        <li class="jobcode"><?php echo $config['job_number']; ?></li>
+                    </ul>
                     <?php
-                        $controllers = App::objects('controller');
-                        $links = array();
-                        foreach ($controllers as $c)
-                        {
-                            if ( in_array($c, array('App', 'Cuts', 'Pages', 'Proxy', 'Tasks')) ) {
-                                continue;
+                }
+            ?>
+            <ul id="menu">
+                <?php
+                    $controllers = App::objects('controller');
+                    $links = array();
+                    foreach ($controllers as $c)
+                    {
+                        if ( in_array($c, array('App', 'Bake', 'Import', 'Tab', 'Tasks', 'Home', 'Cuts')) ) {
+                            continue;
+                        }
+                        $class = '';
+                        if(isset($pluralVar)){
+                            if($pluralVar == strtolower($c)){
+                                $class = ' class="current"';
                             }
-                            $class = '';
-                            if(isset($pluralVar)){
-                                if($pluralVar == strtolower($c)){
+                        }
+                        $links[] = '<li'.$class.'>'.$this->Html->link(Inflector::humanize(Inflector::underscore($c)), array('plugin' => null, 'controller' => Inflector::underscore($c), 'action' => 'index')).'</li>';
+                    }
+                    if(!empty($scaffold['admin'])){
+                        if(!empty($scaffold['admin']['addLinks'])){
+                            foreach($scaffold['admin']['addLinks'] as $k => $v){
+                                $class = '';
+                                if($v['controller'] == $this->params['controller'] && $v['action'] == $this->params['action']){
                                     $class = ' class="current"';
                                 }
+                                $links[] = '<li'.$class.'>'.$this->Html->link($k, array_merge(array('plugin' => null),$v)).'</li>';
                             }
-                            $links[] = '<li'.$class.'>'.$this->Html->link(Inflector::humanize(Inflector::underscore($c)), array('plugin' => null, 'controller' => Inflector::underscore($c), 'action' => 'index')).'</li>';
                         }
-                        #$links[] = $this->Html->link('Settings', array('plugin' => 'settings', 'controller' => 'configs', 'action' => 'index'));
-                        echo implode('</li><li>', $links);
-                    ?>
-                </li>
+                    }
+                    $class = '';
+                    if($this->params['plugin'] == 'settings'){
+                        $class = ' class="current"';
+                    }
+                    $links[] = '<li'.$class.'>'.$this->Html->link('Settings', array('plugin' => 'settings', 'controller' => 'configs', 'action' => 'index')).'</li>';
+                    echo implode('', $links);
+                ?>
             </ul>
         </div>
         <div id="content">
@@ -76,16 +108,48 @@
                     $flash = str_replace('<div id="flashMessage" class="message">','<div id="flashMessage" class="'.$class.' message"><span class="result">'.ucwords($class).' - </span>',$flash);
                 }
                 echo $flash;
+                if(empty($this->plugin)){
+                    ?>
+                    <select id="actions" onchange="javascript:window.location.href=this.options[this.selectedIndex].value">
+                        <option value="" selected="selected">Select an Action</option>
+                    <?php if(empty($scaffold[$modelClass]['restrict']['actions']) || !in_array('add',$scaffold[$modelClass]['restrict']['actions'])): ?>
+                        <option value="<?php echo $this->Html->url(array('action' => 'add')); ?>"><?php echo sprintf(__('New %s', true), $singularHumanName); ?></option>
+                    <?php endif; ?>
+                    <?php if (in_array($this->action,array('edit'))):?>
+                        <?php if(empty($scaffold[$modelClass]['restrict']['actions']) || !in_array('view',$scaffold[$modelClass]['restrict']['actions'])): ?>
+                            <option value="<?php echo $this->Html->url(array('action' => 'view', $this->Form->value($modelClass.'.'.$primaryKey))); ?>"><?php echo sprintf(__('View %s', true), $singularHumanName); ?></option>
+                        <?php endif; ?>
+                    <?php endif;?>
+                    <?php if ($this->action == 'view'): ?>
+                        <option value="<?php echo $this->Html->url(array('action' => 'edit', ${$singularVar}[$modelClass][$primaryKey])); ?>"><?php echo sprintf(__('Edit %s', true), $singularHumanName); ?></option>
+                    <?php endif; ?>
+                    <?php if (in_array($this->action,array('view','edit'))):?>
+                        <?php if(empty($scaffold[$modelClass]['restrict']['actions']) || !in_array('delete',$scaffold[$modelClass]['restrict']['actions'])): ?>
+                            <option value="<?php echo $this->Html->url(array('action' => 'delete', $this->Form->value($modelClass.'.'.$primaryKey))); ?>"><?php echo sprintf(__('Delete %s', true), $singularHumanName); ?></option>
+                        <?php endif; ?>
+                    <?php endif;?>
+                            <option value="<?php echo $this->Html->url(array('action' => 'index'));?>"><?php echo sprintf(__('List %s', true), $pluralHumanName);?></option>
+                    <?php
+                            $done = array();
+                            foreach ($associations as $_type => $_data) {
+                                foreach ($_data as $_alias => $_details) {
+                                    if ($_details['controller'] != $this->name && !in_array($_details['controller'], $done)) {
+                                        echo "\t\t<li>" . $this->Html->link(sprintf(__('List %s', true), Inflector::humanize($_details['controller'])), array('controller' => $_details['controller'], 'action' =>'index')) . "</li>\n";
+                                        if(empty($scaffold[$_alias]['restrict']['actions']) || !in_array('add',$scaffold[$_alias]['restrict']['actions'])){echo "\t\t<li>" . $this->Html->link(sprintf(__('New %s', true), Inflector::humanize(Inflector::underscore($_alias))), array('controller' => $_details['controller'], 'action' =>'add')) . "</li>\n";}
+                                        $done[] = $_details['controller'];
+                                    }
+                                }
+                            }
+                    ?>
+                    </select>
+                    <?
+                }
             ?>
             <?php echo $content_for_layout; ?>
         </div>
         <div id="footer">
-            <?php echo $this->Html->link(
-                    $this->Html->image('cake.power.gif', array('alt'=> __('CakePHP: the rapid development php framework', true), 'border' => '0')),
-                    'http://www.cakephp.org/',
-                    array('target' => '_blank', 'escape' => false)
-                );
-            ?>
+            <p id="info"><strong>AdminWorks</strong><br/>Version 0.2</p>
+            <a href="http://www.ideaworks.com.au/?utm_source=AdminWorks" target="_blank">IdeaWorks</a>
         </div>
     </div>
     <?php echo $this->element('sql_dump'); ?>

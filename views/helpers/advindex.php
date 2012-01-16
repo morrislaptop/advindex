@@ -1,7 +1,7 @@
 <?php
 class AdvindexHelper extends AppHelper {
 
-	var $helpers = array('Html', 'Paginator', 'Form', 'Session', 'Text');
+	var $helpers = array('Html', 'Paginator', 'Form', 'Session', 'Text', 'Time');
 
 	/**
 	* @var FormHelper
@@ -161,13 +161,128 @@ class AdvindexHelper extends AppHelper {
 		return $cols;
 	}
     
-    function templateOutput($tpl){
-        $view = str_replace(APP,'',$tpl);
-        $plugin = str_replace(APP.'plugins'.DS,'',__FILE__);
-        $plugin = substr($plugin,0,strpos($plugin,DS));
-        echo $view.';'.$plugin;
-        //echo __FILE__.APP.';'.$tpl;
-        //echo __FILE__.APP.';'.$tpl;
+    /**
+    * AdminWorks specific functions
+    */
+    
+    /**
+    * Set template variables
+    * 
+    * @param array $scaffold
+    * @param array $structure
+    * @param array $scaffoldFields
+    * @param string $modelClass
+    */
+    function setTemplateVariables(&$scaffold, &$structure, &$scaffoldFields, $modelClass){
+        $scaffold = Configure::read('scaffold');
+        if(!empty($scaffold[$modelClass][$this->params['action']])){
+            $structure = $scaffold[$modelClass][$this->params['action']];
+            $errors = array();
+            foreach($structure as $k => $v){
+                if(substr($k,0,strlen('_special_')) == '_special_'){ // Special field
+                    
+                }elseif(is_integer($k) || in_array($k,$scaffoldFields)){ // Normal field OR Field with options
+                    if(!in_array($v,$scaffoldFields) && !in_array($k,$scaffoldFields) && $v != 'actions'){  // Doesn't exist
+                        unset($structure[$k]);
+                        $errors[] = 'Field "'.$v.'" doesn\'t exist so it was removed';
+                    }
+                }else{ // Group of fields
+                    foreach($structure[$k] as $gk => $gv){
+                        if(is_integer($gk) || in_array($gk,$scaffoldFields)){ // Normal field OR Field with options
+                            if(!in_array($gv,$scaffoldFields) && !in_array($gk,$scaffoldFields)){  // Doesn't exist
+                                unset($structure[$k][$gk]);
+                                debug('Field "'.$k.'->'.$gv.'" doesn\'t exist so it was removed');
+                            }
+                        }else{  // Doesn't exist
+                            unset($structure[$k][$gk]);
+                            $errors[] = 'Field "'.$k.'->'.$gk.'" doesn\'t exist so it was removed';
+                        }
+                    }
+                }
+            }
+            if(count($errors) > 0){
+                debug(implode('<br/>',$errors).'<br/><br/>These are the fields available for $structure[\''.$modelClass.'\']:<br/>'.print_r($scaffoldFields,true));
+            }
+            if(!count($structure) > 0){
+                $structure = $scaffoldFields;
+                $structure[] = 'actions'; // Add actions in so they show up
+            }
+        }else{
+            $structure = $scaffoldFields;
+            $structure[] = 'actions'; // Add actions in so they show up
+        }
     }
+    
+    /**
+    * Return output for templates
+    * 
+    * @param array $array
+    * @param array $data
+    * @param string $field
+    */
+    function getOutput(&$array, &$data, &$field){
+        if(is_array($array) && isset($array['call_user_func'])){
+            return call_user_func($array['call_user_func'],$data[$field]);
+        }elseif(is_array($array) && !empty($array['switch'])){
+            if(isset($array['switch'][$data[$field]])){
+                return $array['switch'][$data[$field]];
+            }else{
+                return $data[$field];
+            }
+        }elseif(isset($array['format'])){
+            switch($array['format']){
+                case 'dateTime':
+                    return $this->Time->niceShort($data[$field]);
+                break;
+                case 'json':
+                    return '<pre>'.print_r(json_decode($data[$field]),true).'</pre>';
+                break;
+            }
+        }elseif(isset($array['yesno']) && $array['yesno'] === true){
+            return ($data[$field] == 0?'No':($data[$field] == 1?'Yes':$data[$field]));
+        }elseif(!empty($array['html']) && is_array($array['html'])){
+            $output = '';
+            foreach($array['html'] as $part){
+                if(!empty($data[$part])){
+                    $output .= $data[$part];
+                }else{
+                    $output .= $part;
+                }
+            }
+            return $output;
+        }
+        return $this->Text->autoLink($data[$field]);
+    }
+    
+    /**
+    * Return output for special fields
+    * 
+    * @param array $array
+    * @param array $data
+    */
+    function getOutputSpecial(&$array, &$data){
+        if(!empty($array['image'])){
+            $path = '';
+            foreach($array['image'] as $part){
+                if(!empty($data[$part])){
+                    $path .= $data[$part];
+                }else{
+                    $path .= $part;
+                }
+            }
+            return '<img src="'.$path.'" />';
+        }elseif(!empty($array['html'])){
+            $output = '';
+            foreach($array['html'] as $part){
+                if(!empty($data[$part])){
+                    $output .= $data[$part];
+                }else{
+                    $output .= $part;
+                }
+            }
+            return $output;
+        }
+    }
+    
 }
 ?>
