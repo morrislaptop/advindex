@@ -160,14 +160,30 @@ class AdvindexHelper extends AppHelper {
 		}
 		return $cols;
 	}
-    
+
     /**
     * AdminWorks specific functions
     */
-    
+
+    /**
+    * Simple template parser for strings
+    *
+    * Enables you to use {field} in a string to inject the `fields`
+    * data in to the string to create dynamic strings
+    *
+    * @param mixed $output
+    * @param mixed $data
+    */
+    function parseTemplate($output,$data){
+		foreach($data as $k => $v){
+			$output = str_replace('{'.$k.'}',$v,$output);
+		}
+		return $output;
+	}
+
     /**
     * Set template variables
-    * 
+    *
     * @param array $scaffold
     * @param array $structure
     * @param array $scaffoldFields
@@ -180,7 +196,7 @@ class AdvindexHelper extends AppHelper {
             $errors = array();
             foreach($structure as $k => $v){
                 if(substr($k,0,strlen('_special_')) == '_special_'){ // Special field
-                    
+
                 }elseif(is_integer($k) || in_array($k,$scaffoldFields)){ // Normal field OR Field with options
                     if(!in_array($v,$scaffoldFields) && !in_array($k,$scaffoldFields) && $v != 'actions'){  // Doesn't exist
                         unset($structure[$k]);
@@ -212,22 +228,22 @@ class AdvindexHelper extends AppHelper {
             $structure[] = 'actions'; // Add actions in so they show up
         }
     }
-    
+
     /**
     * Return output for templates
-    * 
+    *
     * @param array $array
     * @param array $data
     * @param string $field
     */
     function getOutput(&$array, &$data, &$field){
         if(is_array($array) && isset($array['call_user_func'])){
-            return call_user_func($array['call_user_func'],$data[$field]);
+            return $this->parseTemplate(call_user_func($array['call_user_func'],$data[$field]),$data);
         }elseif(is_array($array) && !empty($array['switch'])){
             if(isset($array['switch'][$data[$field]])){
-                return $array['switch'][$data[$field]];
+                return $this->parseTemplate($array['switch'][$data[$field]],$data);
             }else{
-                return $data[$field];
+                return $this->parseTemplate($data[$field],$data);
             }
         }elseif(isset($array['format'])){
             switch($array['format']){
@@ -249,14 +265,17 @@ class AdvindexHelper extends AppHelper {
                     $output .= $part;
                 }
             }
-            return $output;
-        }
-        return $this->Text->autoLink($data[$field]);
+            return $this->parseTemplate($output,$data);
+		}
+		if($array != $field){
+			return $this->parseTemplate($array,$data);
+		}
+        return $this->parseTemplate($this->Text->autoLink($data[$field]),$data);
     }
-    
+
     /**
     * Return output for special fields
-    * 
+    *
     * @param array $array
     * @param array $data
     */
@@ -270,7 +289,7 @@ class AdvindexHelper extends AppHelper {
                     $path .= $part;
                 }
             }
-            return '<img src="'.$path.'" />';
+            return $this->parseTemplate('<img src="'.$path.'" />',$data);
         }elseif(!empty($array['html'])){
             $output = '';
             foreach($array['html'] as $part){
@@ -280,9 +299,9 @@ class AdvindexHelper extends AppHelper {
                     $output .= $part;
                 }
             }
-            return $output;
+            return $this->parseTemplate($output,$data);
         }
     }
-    
+
 }
 ?>
