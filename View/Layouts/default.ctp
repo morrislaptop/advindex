@@ -64,9 +64,10 @@ if(empty($this->plugin)){
                     $links = array();
                     foreach ($controllers as $c)
                     {
-                        if ( in_array($c, array('App', 'Bake', 'Import', 'Tab', 'Tasks', 'Home', 'Cuts', 'Pages')) ) {
+                        if ( in_array($c, array('AppController', 'PagesController')) ) {
                             continue;
                         }
+                        $c = str_replace('Controller', '', $c);
                         $class = '';
                         if(isset($pluralVar)){
                             if($pluralVar == strtolower($c)){
@@ -108,39 +109,40 @@ if(empty($this->plugin)){
                     $flash = str_replace('<div id="flashMessage" class="message">','<div id="flashMessage" class="'.$class.' message"><span class="result">'.ucwords($class).' - </span>',$flash);
                 }
                 echo $flash;
-                if(empty($this->plugin)){
+                if(empty($this->plugin))
+                {
                     ?>
                     <select id="actions" onchange="javascript:window.location.href=this.options[this.selectedIndex].value">
                         <option value="" selected="selected">Select an Action</option>
-                    <?php if(empty($scaffold[$modelClass]['restrict']['actions']) || !in_array('add',$scaffold[$modelClass]['restrict']['actions'])): ?>
-                        <option value="<?php echo $this->Html->url(array('action' => 'add')); ?>"><?php echo sprintf(__('New %s', true), $singularHumanName); ?></option>
-                    <?php endif; ?>
-                    <?php if (in_array($this->action,array('edit'))):?>
-                        <?php if(empty($scaffold[$modelClass]['restrict']['actions']) || !in_array('view',$scaffold[$modelClass]['restrict']['actions'])): ?>
-                            <option value="<?php echo $this->Html->url(array('action' => 'view', $this->Form->value($modelClass.'.'.$primaryKey))); ?>"><?php echo sprintf(__('View %s', true), $singularHumanName); ?></option>
-                        <?php endif; ?>
-                    <?php endif;?>
-                    <?php if ($this->action == 'view'): ?>
-                        <option value="<?php echo $this->Html->url(array('action' => 'edit', ${$singularVar}[$modelClass][$primaryKey])); ?>"><?php echo sprintf(__('Edit %s', true), $singularHumanName); ?></option>
-                    <?php endif; ?>
-                    <?php if (in_array($this->action,array('view','edit'))):?>
-                        <?php if(empty($scaffold[$modelClass]['restrict']['actions']) || !in_array('delete',$scaffold[$modelClass]['restrict']['actions'])): ?>
-                            <option value="<?php echo $this->Html->url(array('action' => 'delete', $this->Form->value($modelClass.'.'.$primaryKey))); ?>"><?php echo sprintf(__('Delete %s', true), $singularHumanName); ?></option>
-                        <?php endif; ?>
-                    <?php endif;?>
-                            <option value="<?php echo $this->Html->url(array('action' => 'index'));?>"><?php echo sprintf(__('List %s', true), $pluralHumanName);?></option>
-                    <?php
+	                    <?php if(empty($scaffold[$modelClass]['restrict']['actions']) || !in_array('add',$scaffold[$modelClass]['restrict']['actions'])): ?>
+	                        <option value="<?php echo $this->Html->url(array('action' => 'add')); ?>"><?php echo sprintf(__('New %s'), $singularHumanName); ?></option>
+	                    <?php endif; ?>
+	                    <?php if (in_array($this->action,array('edit'))):?>
+	                        <?php if(empty($scaffold[$modelClass]['restrict']['actions']) || !in_array('view',$scaffold[$modelClass]['restrict']['actions'])): ?>
+	                            <option value="<?php echo $this->Html->url(array('action' => 'view', $this->Form->value($modelClass.'.'.$primaryKey))); ?>"><?php echo sprintf(__('View %s'), $singularHumanName); ?></option>
+	                        <?php endif; ?>
+	                    <?php endif;?>
+		                <?php if ($this->action == 'view'): ?>
+		                    <option value="<?php echo $this->Html->url(array('action' => 'edit', ${$singularVar}[$modelClass][$primaryKey])); ?>"><?php echo sprintf(__('Edit %s'), $singularHumanName); ?></option>
+		                <?php endif; ?>
+		                <?php if (in_array($this->action,array('view','edit'))):?>
+		                    <?php if(empty($scaffold[$modelClass]['restrict']['actions']) || !in_array('delete',$scaffold[$modelClass]['restrict']['actions'])): ?>
+		                        <option value="<?php echo $this->Html->url(array('action' => 'delete', $this->Form->value($modelClass.'.'.$primaryKey))); ?>"><?php echo sprintf(__('Delete %s'), $singularHumanName); ?></option>
+		                    <?php endif; ?>
+		                <?php endif;?>
+                        <option value="<?php echo $this->Html->url(array('action' => 'index'));?>"><?php echo sprintf(__('List %s'), $pluralHumanName);?></option>
+                    	<?php
                             $done = array();
                             foreach ($associations as $_type => $_data) {
                                 foreach ($_data as $_alias => $_details) {
                                     if ($_details['controller'] != $this->name && !in_array($_details['controller'], $done)) {
                                         echo "\t\t<li>" . $this->Html->link(sprintf(__('List %s', true), Inflector::humanize($_details['controller'])), array('controller' => $_details['controller'], 'action' =>'index')) . "</li>\n";
-                                        if(empty($scaffold[$_alias]['restrict']['actions']) || !in_array('add',$scaffold[$_alias]['restrict']['actions'])){echo "\t\t<li>" . $this->Html->link(sprintf(__('New %s', true), Inflector::humanize(Inflector::underscore($_alias))), array('controller' => $_details['controller'], 'action' =>'add')) . "</li>\n";}
+                                        if(empty($scaffold[$_alias]['restrict']['actions']) || !in_array('add',$scaffold[$_alias]['restrict']['actions'])){echo "\t\t<li>" . $this->Html->link(sprintf(__('New %s'), Inflector::humanize(Inflector::underscore($_alias))), array('controller' => $_details['controller'], 'action' =>'add')) . "</li>\n";}
                                         $done[] = $_details['controller'];
                                     }
                                 }
                             }
-                    ?>
+                   		?>
                     </select>
                     <?
                 }

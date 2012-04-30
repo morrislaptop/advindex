@@ -1,12 +1,12 @@
 <?php
-class AdvindexHelper extends AppHelper {
+
+
+
+class AdvindexHelper extends FormHelper {
 
 	var $helpers = array('Html', 'Paginator', 'Form', 'Session', 'Text', 'Time');
 
-	/**
-	* @var FormHelper
-	*/
-	var $Form;
+
 	/**
 	* @var AdvformHelper
 	*/
@@ -15,25 +15,25 @@ class AdvindexHelper extends AppHelper {
 
 	function create($model) {
 		// we have to set the url manually as the id in the form data causes Router errors.
-		return $this->Form->create($model, array('url' => array('action' => 'index')));
-	}
-
-	function end() {
-		return $this->Form->end();
+		return parent::create($model, array('url' => array('action' => 'index')));
 	}
 
 	function search() {
-		return $this->Form->submit('Search', array('class' => 'submit tiny'));
+		return parent::submit('Search', array('class' => 'submit tiny'));
 	}
 
-	function filter($field, $options = array()) {
+	function filter($fieldName, $options = array()) 
+	{
+		$this->setEntity($fieldName);
+		
         $options = array_merge(array(
             'fromTo' => true
         ),$options);
-		$this->setEntity($field);
-		$modelName = $this->model();
-		$model =& ClassRegistry::getObject($modelName);
-		$columnType = $model->getColumnType($this->field());
+        
+		$modelKey = $this->model();
+		$fieldKey = $this->field();
+		$fieldDef = $this->_introspectModel($modelKey, 'fields', $fieldKey);
+		$columnType = $fieldDef['type'];
 
 		// override column type if in the options
 		if ( !empty($options['type']) ) {
@@ -44,7 +44,7 @@ class AdvindexHelper extends AppHelper {
 			// pretty safe to assume we want to turn date times into dates
 			$columnType = 'date';
 		}
-		else if ( '_id' === substr($field, -strlen('_id')) ) {
+		else if ( '_id' === substr($fieldName, -strlen('_id')) ) {
 			$columnType = 'foreign';
 		}
 
@@ -54,8 +54,8 @@ class AdvindexHelper extends AppHelper {
 		}
 
 		// qualify model.
-		if ( strpos($field, '.') === false ) {
-			$field = $modelName . '.' . $field;
+		if ( strpos($fieldName, '.') === false ) {
+			$fieldName = $modelKey . '.' . $fieldName;
 		}
 
 		// text types just get a textbox.
@@ -67,17 +67,17 @@ class AdvindexHelper extends AppHelper {
 					'True'
 				);
 				$options = array_merge(array('type' => 'select', 'label' => false, 'div' => false, 'empty' => true, 'options' => $selOptions), $options);
-				return $this->Form->input($field, $options);
+				return $this->Form->input($fieldName, $options);
 			break;
 
 			case 'integer':
 			case 'float':
                 if ( $options['fromTo'] ) {
-				    $from = $this->Form->input($field . '.from', array_merge(array('type' => 'text', 'class' => 'range'), $options));
-				    $to = $this->Form->input($field . '.to', array_merge(array('type' => 'text', 'class' => 'range'), $options));
+				    $from = $this->Form->input($fieldName . '.from', array_merge(array('type' => 'text', 'class' => 'range'), $options));
+				    $to = $this->Form->input($fieldName . '.to', array_merge(array('type' => 'text', 'class' => 'range'), $options));
 				    return $from . $to;
                 } else {
-                    return $this->Form->input($field . '.from', array_merge(array('label' => false, 'type' => 'text', 'class' => 'range'), $options));
+                    return $this->Form->input($fieldName . '.from', array_merge(array('label' => false, 'type' => 'text', 'class' => 'range'), $options));
                 }
 			break;
 
@@ -85,23 +85,23 @@ class AdvindexHelper extends AppHelper {
 			case 'datetime':
 			case 'timestamp':
                 if ( $options['fromTo'] ) {
-				    $from = $this->Form->input($field . '.from', array('label' => 'From', 'class' => 'text date_picker', 'type' => 'text'));
-				    $to = $this->Form->input($field . '.to', array('label' => 'To', 'class' => 'text date_picker', 'type' => 'text'));
+				    $from = $this->Form->input($fieldName . '.from', array('label' => 'From', 'class' => 'text date_picker', 'type' => 'text'));
+				    $to = $this->Form->input($fieldName . '.to', array('label' => 'To', 'class' => 'text date_picker', 'type' => 'text'));
 				    return $from . $to;
                 } else {
-                    return $this->Form->input($field . '.from', array('label' => false, 'class' => 'text date_picker', 'type' => 'text'));
+                    return $this->Form->input($fieldName . '.from', array('label' => false, 'class' => 'text date_picker', 'type' => 'text'));
                 }
 			break;
 
 			case 'time':
                 if ( $options['fromTo'] ) {
 				    $options = array_merge(array('empty' => true, 'type' => 'time'), $options);
-				    $from = $this->Form->input($field . '.from', $options);
-				    $to = $this->Form->input($field . '.to', $options);
+				    $from = $this->Form->input($fieldName . '.from', $options);
+				    $to = $this->Form->input($fieldName . '.to', $options);
 				    return $from . $to;
                 } else {
                     $options = array_merge(array('label' => false, 'empty' => true, 'type' => 'time'), $options);
-                    return $this->Form->input($field . '.from', $options);
+                    return $this->Form->input($fieldName . '.from', $options);
                 }
 			break;
 
@@ -110,12 +110,12 @@ class AdvindexHelper extends AppHelper {
 			case 'foreign':
 			default:
 				$options = array_merge(array('label' => false, 'empty' => true), $options);
-				return $this->Form->input($field, $options);
+				return $this->Form->input($fieldName, $options);
 			break;
 		}
 
 
-		return $this->Form->input($field, $options);
+		return $this->Form->input($fieldName, $options);
 	}
 
 	function export($label) {

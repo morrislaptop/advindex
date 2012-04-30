@@ -14,7 +14,7 @@ class AdvindexComponent extends Object {
 	}
 
 	function _initSettings($settings) {
-		$this->modelName = $modelName = !empty($settings['modelName']) ? $settings['modelName'] : reset($this->controller->modelNames);
+		$this->modelName = $modelName = !empty($settings['modelName']) ? $settings['modelName'] : $this->controller->modelClass;
 		$this->sessionKey = 'Advindex.' . $this->modelName;
 		$default = array(
 			'fields' => $modelName ? $this->_getDefaultFields($this->controller->$modelName) : array(),
@@ -62,6 +62,9 @@ class AdvindexComponent extends Object {
 			return;
 		}
 		$action = $controller->params['action'];
+		
+		// Set controller properties..
+		$controller->layout = 'Advindex.default';
 
 		// Methods we assist with here - we dont need to take over
 		if ( in_array($action, array('index', 'admin_index')) ) {
@@ -139,7 +142,7 @@ class AdvindexComponent extends Object {
 	{
 		if ( !empty($this->controller->data) ) {
 			$perPage = !empty($this->controller->data[$this->modelName]['perPage']) ? $this->controller->data[$this->modelName]['perPage'] : 20;
-			unset($this->controller->data[$this->modelName]['perPage']);
+			unset($this->controller->request->data[$this->modelName]['perPage']);
 			$this->controller->Session->write($this->sessionKey . '.conditions', $this->controller->data);
 			$this->controller->Session->write($this->sessionKey . '.perPage', $perPage);
 		}
@@ -153,7 +156,7 @@ class AdvindexComponent extends Object {
 		$perPageKey = $this->sessionKey . '.perPage';
 		$perPage = $this->controller->Session->read($perPageKey);
 		if ( $perPage ) {
-			$this->controller->paginate['limit'] = 'All' == $perPage ? PHP_INT_MAX : $perPage;
+			$this->controller->Components->load('Paginator')->settings['limit'] = 'All' == $perPage ? PHP_INT_MAX : $perPage;
 		}
 
 		// Current Page
@@ -166,7 +169,7 @@ class AdvindexComponent extends Object {
 			$currPage = $this->controller->Session->read($currPageKey);
 		}
 		if ( $currPage ) {
-			$this->controller->paginate['page'] = $currPage;
+			$this->controller->Components->load('Paginator')->settings['page'] = $currPage;
 		}
 
 		// Sorting
@@ -453,7 +456,7 @@ class AdvindexComponent extends Object {
 						case 'date':
 						case 'time':
 						case 'timestamp':
-							if ( isset($keyword['from']) || isset($keyword['to']) ) {
+							if ( isset($keyword['from']) && isset($keyword['to']) ) {
 								if ( !empty($keyword['from']) ) {
 									$time = strtotime($keyword['from']);
 									$keyword['from'] = array(
