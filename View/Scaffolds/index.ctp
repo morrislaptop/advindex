@@ -92,7 +92,15 @@ $this->Advindex->setTemplateVariables($scaffold, $structure, $scaffoldFields, $m
 			            echo "\t\t<td class=\"actions\">\n";
 			            echo "\t\t\t" . $this->Html->link(__('View', true), array('action' => 'view', ${$singularVar}[$modelClass][$primaryKey]), array('class' => 'view')) . "\n";
 			            echo "\t\t\t" . $this->Html->link(__('Edit', true), array('action' => 'edit', ${$singularVar}[$modelClass][$primaryKey]), array('class' => 'edit')) . "\n";
-			            if(empty($scaffold[$modelClass]['restrict']['actions']) || !in_array('delete',$scaffold[$modelClass]['restrict']['actions'])){echo "\t\t\t" . $this->Html->link(__('Delete', true), array('action' => 'delete', ${$singularVar}[$modelClass][$primaryKey]), array('class' => 'delete'), __('Are you sure you want to delete', true).' #' . ${$singularVar}[$modelClass][$primaryKey]) . "\n";}
+			            if ( empty($scaffold[$modelClass]['restrict']['actions']) || !in_array('delete',$scaffold[$modelClass]['restrict']['actions']) )
+			            {
+			            	echo $this->Form->postLink(
+								__d('cake', 'Delete'),
+								array('action' => 'delete', ${$singularVar}[$modelClass][$primaryKey]),
+								array('class' => 'delete'),
+								__d('cake', 'Are you sure you want to delete').' #' . ${$singularVar}[$modelClass][$primaryKey]
+							);
+						}
 			            echo "\t\t</td>\n";
 			        }elseif(is_integer($k) || in_array($k,$scaffoldFields)){ // Normal field OR Field with options
 			            if(in_array($v,$scaffoldFields)){   // Normal field
