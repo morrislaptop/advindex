@@ -196,7 +196,7 @@ class AdvindexComponent extends Object {
 
 		// Set order from the sort field and direciton.
 		if ( $sort ) {
-			$this->controller->paginate['order'] = $this->modelName . '.' . $sort . ' ' . $direction;
+			$this->controller->Components->load('Paginator')->settings['order'] = $this->modelName . '.' . $sort . ' ' . $direction;
 		}
 	}
 
@@ -224,7 +224,7 @@ class AdvindexComponent extends Object {
 			$row = $newRow;
 		}
 
-		App::import('Vendor', 'advindex.parseCSV', array('file' => 'parsecsv-0.3.2' . DS . 'parsecsv.lib.php'));
+		App::import('Vendor', 'Advindex.parseCSV', array('file' => 'parsecsv-0.3.2' . DS . 'parsecsv.lib.php'));
 		$csv = new parseCSV();
 		$return = $csv->output(!$text, $this->controller->name . '.csv', $rows, $this->settings['fields']);
 		if ( $text ) {
