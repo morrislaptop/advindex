@@ -6,7 +6,13 @@ Advanced scaffolding which allows searching and exporting / importing of your mo
 Installation
 ----
 
+Add the repo to your working directory
+
 	git clone https://github.com/morrislaptop/advindex app/Plugin/Advindex
+	
+Add the following to app/Config/bootstrap.php
+
+	CakePlugin::load('Advindex');
   
 Add the following to the top of AppController.php
 
@@ -15,8 +21,13 @@ Add the following to the top of AppController.php
 	
 Include the following in your controller:
 
-	var $helpers = array('Advindex.Advindex');
-	var $components = array('Advindex.Advindex');
+	public $helpers = array('Advindex.Advindex');
+	public $components = array('Advindex.Advindex');
+	public $scaffold = 'admin';
+	
+Finally, check you have your routing prefix enabled in app/Config/core.php
+
+	Configure::write('Routing.prefixes', array('admin'));
   
 Configuration
 ----
