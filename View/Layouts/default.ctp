@@ -31,6 +31,7 @@ if(empty($this->plugin)){
     <?php
         echo $this->Html->meta('icon');
 
+        echo $this->Html->script('https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js');
         echo $this->Html->css('cake.generic');
         echo $this->Html->css('/advindex/css/style.css');
 
@@ -92,6 +93,8 @@ if(empty($this->plugin)){
                         $class = ' class="current"';
                     }
                     $links[] = '<li'.$class.'>'.$this->Html->link('Settings', array('plugin' => 'settings', 'controller' => 'configs', 'action' => 'index')).'</li>';
+                    $links[] = '<li'.$class.'>'.$this->Html->link('Routes', array('plugin' => 'settings', 'controller' => 'routes', 'action' => 'index')).'</li>';
+                    $links[] = '<li'.$class.'>'.$this->Html->link('Translations', array('plugin' => 'settings', 'controller' => 'translations', 'action' => 'index')).'</li>';
                     echo implode('', $links);
                 ?>
             </ul>
