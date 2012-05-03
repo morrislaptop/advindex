@@ -294,7 +294,7 @@ class Scaffold {
 	protected function _scaffoldDelete(CakeRequest $request) {
 		if ($this->controller->beforeScaffold('delete')) {
 			if (!$request->is('post')) {
-				throw new MethodNotAllowedException();
+				#throw new MethodNotAllowedException();
 			}
 			$id = false;
 			if (isset($request->params['pass'][0])) {
