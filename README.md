@@ -8,7 +8,7 @@ Installation
 
 Add the repo to your working directory
 
-	git clone https://github.com/morrislaptop/advindex app/Plugin/Advindex
+	git submodule add https://github.com/morrislaptop/advindex app/Plugin/Advindex
 	
 Add the following to app/Config/bootstrap.php
 
