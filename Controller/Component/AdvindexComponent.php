@@ -207,13 +207,14 @@ class AdvindexComponent extends Object {
 		$modelName = $this->modelName;
 		$callbacks = false;
 		$fields = array_keys($this->settings['fields']);
+		$recursive = -1;
 
 		$order = null;
 		if ( !empty($this->controller->passedArgs['sort']) ) {
 			$order = array($this->controller->passedArgs['sort'] => $this->controller->passedArgs['direction']);
 		}
 
-		$rows = $this->controller->$modelName->find('all', compact('conditions', 'order', 'callbacks', 'fields'));
+		$rows = $this->controller->$modelName->find('all', compact('conditions', 'order', 'callbacks', 'fields', 'recursive'));
 		foreach ($rows as &$row) {
 			$newRow = array();
 			foreach ($row as $model => $values) {
