@@ -219,7 +219,7 @@ class AdvindexComponent extends Object {
 			$newRow = array();
 			foreach ($row as $model => $values) {
 				foreach ($values as $field => $value) {
-					$newRow[$model . '.' . $field] = $value;
+					$newRow[$model . '.' . $field] = $this->csvCell($value);
 				}
 			}
 			$row = $newRow;
@@ -236,6 +236,16 @@ class AdvindexComponent extends Object {
 			Configure::write('debug', 0); // get rid of sql log at the end
 		}
 		exit;
+	}
+	
+	/**
+	* - Remove new lines characters
+	* 
+	* @param mixed $value
+	*/
+	function csvCell($value) {
+		$value = preg_replace('@\s+@', ' ', $value);
+		return $value;
 	}
 
 	/**
