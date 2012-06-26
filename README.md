@@ -34,6 +34,15 @@ Configuration
 
 See the bootstrap.php.example file to configure the scaffolding for each of your models
 
+Getting the advindex layout in other plugins
+----
+
+	function beforeFilter() {
+        	if ( !empty($this->params['admin']) ) {
+			$this->layout = 'Advindex.default';
+		}
+	}
+
 Credits
 ----
 
