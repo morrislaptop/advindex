@@ -126,7 +126,7 @@ class AdvindexComponent extends Object {
 				foreach ($upload_fields as $field)
 				{	
 		            if ( !empty($this->controller->data[$this->modelName][$field]) && UPLOAD_ERR_OK !== $this->controller->data[$this->modelName][$field]['error'] ) {
-		                unset($this->controller->data[$this->modelName][$field]);
+		                unset($this->controller->request->data[$this->modelName][$field]);
 		            }
 				}
 			}
