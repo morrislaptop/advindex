@@ -147,7 +147,7 @@ if(empty($this->plugin)){
                             }
                    		?>
                     </select>
-                    <?
+                    <?php
                 }
             ?>
             <?php echo $content_for_layout; ?>
