@@ -65,7 +65,13 @@ if(empty($this->plugin)){
                     $links = array();
                     foreach ($controllers as $c)
                     {
-                        if ( in_array($c, array('AppController', 'PagesController')) ) {
+                        $avoid = array('AppController', 'PagesController');
+                        $extra_remove_links=$scaffold['admin']['removeLinks'];
+                        if (!empty($extra_remove_links)){
+                                $avoid = am($avoid, $extra_remove_links);
+                        }                        
+                                
+                        if ( in_array($c, $avoid) ) {
                             continue;
                         }
                         $c = str_replace('Controller', '', $c);
@@ -77,6 +83,7 @@ if(empty($this->plugin)){
                         }
                         $links[] = '<li'.$class.'>'.$this->Html->link(Inflector::humanize(Inflector::underscore($c)), array('plugin' => null, 'controller' => Inflector::underscore($c), 'action' => 'index')).'</li>';
                     }
+
                     if(!empty($scaffold['admin'])){
                         if(!empty($scaffold['admin']['addLinks'])){
                             foreach($scaffold['admin']['addLinks'] as $k => $v){

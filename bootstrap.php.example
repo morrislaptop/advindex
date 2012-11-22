@@ -6,6 +6,17 @@
  * @author Blake Kus <blake.kus@ideaworks.com.au>
  * @date 2012-01-16
  * 
+ *  CHANGELOG:
+ * 0.3 2012-11-22
+ * Allowed us to hide more controllers in the backend by adding 'removeLinks'
+ * 'admin' => array(
+ *      'addLinks' => array(
+ *           ...
+ *        ),
+ *     'removeLinks'=>array('TabController', 'GamesController', 'RoutesController', 'TranslationsController'),
+ * )
+ * 
+ * 
  * CHANGELOG:
  * 0.2 2012-01-16
  * Merged in to Craig Morris' Advindex as it realies on it
