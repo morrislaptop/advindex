@@ -66,9 +66,8 @@ if(empty($this->plugin)){
                     foreach ($controllers as $c)
                     {
                         $avoid = array('AppController', 'PagesController');
-                        $extra_remove_links=$scaffold['admin']['removeLinks'];
-                        if (!empty($extra_remove_links)){
-                                $avoid = am($avoid, $extra_remove_links);
+                        if (isset($scaffold['admin']['removeLinks'])){
+                                $avoid = am($avoid, $scaffold['admin']['removeLinks']);
                         }                        
                                 
                         if ( in_array($c, $avoid) ) {
