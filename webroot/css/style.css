@@ -1,1 +1,898 @@
-/* http://meyerweb.com/eric/tools/css/reset/    v2.0 | 20110126   License: none (public domain)*/html, body, div, span, applet, object, iframe,h1, h2, h3, h4, h5, h6, p, blockquote, pre,a, abbr, acronym, address, big, cite, code,del, dfn, em, img, ins, kbd, q, s, samp,small, strike, strong, sub, sup, tt, var,b, u, i, center,dl, dt, dd, ol, ul, li,fieldset, form, label, legend,table, caption, tbody, tfoot, thead, tr, th, td,article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary,time, mark, audio, video {    margin: 0;    padding: 0;    border: 0;    font-size: 100%;    font: inherit;    vertical-align: baseline;}/* HTML5 display-role reset for older browsers */article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section {    display: block;}body {    line-height: 1;}ol, ul {    list-style: none;}blockquote, q {    quotes: none;}blockquote:before, blockquote:after,q:before, q:after {    content: '';    content: none;}table {    border-collapse: collapse;    border-spacing: 0;}strong {    font-weight: bold;}/* float clearing for IE6 */* html .clearfix{  height: 1%;  overflow: visible;}/* float clearing for IE7 */*+html .clearfix{  min-height: 1%;}/* float clearing for everyone else */.clearfix:after{  clear: both;  content: ".";  display: block;  height: 0;  visibility: hidden;  font-size: 0;}/** * * Start styles * */body{    margin:0;    color:#595959;    font-size: 14px;    font-family: Arial, Helvetica, sans-serif;    background-color: #ffffff;}/*.cake-sql-log {    display: none;}*/#container {    width: 100%;    background: #e8e7e8 url(http://www.ideaworks.com.au/shoulder/images/background.gif) repeat;}    #header {        margin: 0;        padding: 0;        width: 90%;        padding: 0 5%;        height: 96px;        background: #16181d;        border-bottom: 1px solid #ffffff;        background: #383d4b;        /*background: -webkit-gradient(linear, 0 0, 0 bottom, from(#383d4b), to(#191c22));        background: -moz-linear-gradient(#383d4b, #191c22);        background: linear-gradient(#383d4b, #191c22);*/        /*-moz-box-shadow:inset 0 -50px 50px #16181d;        -webkit-box-shadow:inset 0 -50px 50px #16181d;        box-shadow:inset 0 50px -50px #16181d;*/        -webkit-box-shadow: inset 0px -50px 50px 0px #16181d;        -moz-box-shadow: inset 0px -50px 50px 0px #16181d;        box-shadow: inset 0px -50px 50px 0px #16181d;    }            #header ul {            margin: 0;            padding: 0;            list-style-type: none;        }                    #header ul#info {                margin-top: 25px;                float: left;                position: relative;            }                            #header ul#info li {                    float: left;                    clear: both;                    margin-left: 65px;                    color: #cccccc;                }                                #header ul#info li.image {                    position: absolute;                    margin-left: 0;                }                                #header ul#info li.name {                    font-size: 20px;                    color: #ffffff;                    font-weight: bold;                }                                #header ul#info li.description {                    font-size: 14px;                    font-weight: bold;                    line-height: 135%;                }                                #header ul#info li.jobcode {                    font-size: 12px;                }                        #header ul#menu {                float: right;            }                            #header ul#menu li {                    float: left;                    margin-left: 10px;                    margin-top: 45px;                }                                #header ul#menu li a {                        display: block;                        background-color: #383d4b;                        font-size: 14px;                        color: #e6eaeb;                        font-weight: bold;                        padding: 10px 20px;                        -webkit-border-radius: 5px;                        -moz-border-radius: 5px;                        border-radius: 5px;                        text-decoration: none;                    }                                        #header ul#menu li a:hover {                        background-color: #464c5e;                    }                                        #header ul#menu li.current a {                        background-color: #e6eaeb;                        color: #333333;                    }        #content {        margin: 0;        padding: 0;        margin: 0 auto;        width: 90%;        padding: 0 5%;        background: none;    }            #content a {            color: #0166b9;            text-decoration: none;        }                        #content a:hover {            color: #0166b9;            text-decoration: underline;        }            #content > .actions  > h3,        #content > .actions > ul,        #content > .actions > hr        {            display: none;        }                #content > .actions > ul.menu {            display: block;        }                #content > .index,        #content > .view,        #content > .form        {            margin: 0;            padding: 0;            padding: 24px 0 30px 0;            border: none;            float: none;            width: 100%;        }                    #content > .index  > h2,            #content > .view  > h2,            #content > .form  > h2            {                float: left;                margin: 0;                padding: 0;                display: block;                border: none;                background: none;                width: 50%;                font-size: 30px;                color: #333333;                text-shadow: #ffffff 1px 1px 0px;                 padding-bottom: 15px;                font-family: 'Times New Roman';            }                        #content > .index  > select,            #content > .view  > select,            #content > .form  > select            {                margin: 0;                padding: 0;                float: right;                clear: none;                color: #666666;                font-size: 14px;            }                        #content > .index  > select option,            #content > .view  > select option,            #content > .form  > select option            {                font-size: 14px;            }                        #flashMessage {                position: relative;                margin: 0;                margin-top: 20px;                background: #ffffff url(http://www.ideaworks.com.au/shoulder/images/icon-information.png) no-repeat 25px 15px;                padding: 30px 30px 30px 80px;                font-size: 14px;                font-weight: normal;                color: #333333;                -webkit-border-radius: 15px;                -moz-border-radius: 15px;                border-radius: 15px;                -moz-box-shadow: 0px 0px 5px #ccc;                -webkit-box-shadow: 0px 0px 5px #ccc;                box-shadow: 0px 0px 5px #ccc;            }                        #flashMessage.error {                padding-top: 23px;                background: #ffcccc url(http://www.ideaworks.com.au/shoulder/images/icon-error.png) no-repeat 25px 15px;            }                        #flashMessage.success {                padding-top: 23px;                background: #ffffff url(http://www.ideaworks.com.au/shoulder/images/icon-success.png) no-repeat 25px 15px;            }                        #flashMessage:before {                border-color: transparent transparent #ffffff transparent;                border-style: solid;                border-width: 0 10px 10px 10px;                content: "";                height: 0;                width: 0;                position: absolute;                top: -10px;                left: 48%;            }                        #flashMessage.error:before {                border-color: transparent transparent #ffcccc transparent;            }                            #flashMessage span.result {                    font-size: 20px;                    font-family: 'Times New Roman';                }                    #content > .index > form,            #content > .view > form,            #content > .form > form            {                margin: 0;                padding: 0;                padding: 20px 0 40px 0;                width: 100%;                background: #ffffff;                -webkit-border-radius: 15px;                -moz-border-radius: 15px;                border-radius: 15px;                -moz-box-shadow: 0px 0px 5px #ccc;                -webkit-box-shadow: 0px 0px 5px #ccc;                box-shadow: 0px 0px 5px #ccc;            }                        #content > .index > form > p {                padding: 20px;            }                        /*#content > .view > form > dl {                width: 100%;            }                            #content > .view > form > dl > dt {                    width: 27.5%;                    float: left;                    clear: both;                    font-weight: bold;                    font-size: 13px;                    padding: 2% 0 2% 2%;                    margin: 0;                    margin-left: 0.5%;                }                                #content > .view > form > dl > dd {                    width: 67.5%;                    float: left;                    padding: 2% 2% 2% 0;                    margin: 0;                    margin-right: 0.5%;                }*/                            #content > .view table,            #content > .view table tbody {                -webkit-border-radius: 15px;                -moz-border-radius: 15px;                border-radius: 15px;            }                        #content > .view table tbody tr:first-child td:first-child {                -webkit-border-radius: 15px 0 0 0;                -moz-border-radius: 15px 0 0 0;                border-radius: 15px 0 0 0;            }                        #content > .view table tbody tr:first-child td:last-child {                -webkit-border-radius: 0 15px 0 0;                -moz-border-radius: 0 15px 0 0;                border-radius: 0 15px 0 0;            }            #content > .view table tbody tr:last-child td:first-child {                -webkit-border-radius: 0 0 0 15px;                -moz-border-radius: 0 0 0 15px;                border-radius: 0 0 0 15px;            }                        #content > .view table tbody tr:last-child td:last-child {                -webkit-border-radius: 0 0 15px 0;                -moz-border-radius: 0 0 15px 0;                border-radius: 0 0 15px 0;            }                        #content > .view table tbody tr td {                padding: 10px;            }                        #content > .view table tbody tr td:first-child {                font-weight: bold;            }                        #content > .view > form > dl {                width: 100%;                margin: 0;                padding: 0;            }                            #content > .view > form > dl > dt {                    float: left;                    clear: left;                    width: 150px;                    margin: 0;                    padding: 0;                }                #content > .view > form > dl > dd {                    margin: 0 0 0 160px;                    padding: 0 0 0.2em 0;                }                                #content > .related {                    margin-bottom: 10px;                    padding: 10px 0;                }                                    #content > .related h3 {                        float: left;                        margin: 0;                        padding: 0;                        display: block;                        border: none;                        background: none;                        width: 50%;                        font-size: 20px;                        color: #333333;                        text-shadow: #ffffff 1px 1px 0px;                         padding-bottom: 15px;                        font-family: 'Times New Roman';                    }                                        #content > .related table {                        -webkit-border-radius: 15px;                        -moz-border-radius: 15px;                        border-radius: 15px;                    }                                        #content > .related table tbody tr:last-child td:first-child {                        -webkit-border-radius: 0 0 0 15px;                        -moz-border-radius: 0 0 0 15px;                        border-radius: 0 0 0 15px;                    }                                        #content > .related table tbody tr:last-child td:last-child {                        -webkit-border-radius: 0 0 15px 0;                        -moz-border-radius: 0 0 15px 0;                        border-radius: 0 0 15px 0;                    }                                    #content > .related div.actions {                        margin: 0;                        padding: 0;                        float: right;                    }                                    #content > .related div.actions a {                        float: right;                        margin: 0;                        margin-bottom: 10px;                        font-size: 12px;                        font-weight: bold;                        color: #333333;                        text-shadow: #ffffff 1px 1px 0px;                         padding: 8px 10px;                        text-decoration: none;                        -webkit-border-radius: 5px;                        -moz-border-radius: 5px;                        border-radius: 5px;                        border: 1px solid #707070;                        background: #f1f1f1;                        background: -webkit-gradient(linear, 0 0, 0 bottom, from(#f1f1f1), to(#d2d2d2));                        background: -moz-linear-gradient(#f1f1f1, #d2d2d2);                        background: linear-gradient(#f1f1f1, #d2d2d2);                    }                            #content > .related div.actions a:hover {                        background: #f1f1f1;                        background: -webkit-gradient(linear, 0 0, 0 bottom, from(#f1f1f1), to(#c8c8c8));                        background: -moz-linear-gradient(#f1f1f1, #c8c8c8);                        background: linear-gradient(#f1f1f1, #c8c8c8);                    }                            #content > .index > form > div#filler {                    margin: 0;                    padding: 0;                    margin-top: -20px;                    width: 100%;                    height: 20px;                    background: #e6eaeb;                    -webkit-border-radius: 15px 15px 0 0;                    -moz-border-radius: 15px 15px 0 0;                    border-radius: 15px 15px 0 0;                }                            #content > .index > form > table                {                    margin: 0;                    padding: 0;                    width: 100%;                    background: none;                    color: #333333;                    margin-bottom: 10px;                }                                    #content > .index > form > table > thead                    {                        margin: 0;                        padding: 0;                        width: 100%;                        background: #e6eaeb;                    }                        #content > .index > form > table > thead > tr.filter {                            margin: 0;                            padding: 0;                        }                                                    #content > .index > form > table > thead > tr.filter > th {                                margin: 0;                                padding: 0;                                vertical-align: top;                            }                                                            #content > .index > form > table > thead > tr.filter > th > div {                                    margin: 0;                                    padding: 0;                                    padding-right: 10px;                                    padding-left: 2px;                                    padding-bottom: 10px;                                }                                        #content > .index > form > table > tbody                    {                        margin: 0;                        padding: 0;                        width: 100%;                    }                                            #content > .index > form > table > tbody > tr.altrow > td {                            background: #ffffff;                        }                                                #content > .index > form > table > tbody > tr.even > td {                            background: #f4f4f4;                        }        #tableOptions {        width: 100%;        margin-top: 5px;    }        #pagination {        width: 80%;        float: left;        margin: 0;        padding: 0;        clear: none;    }            #pagination a {            color: #0166b9;        }                #pagination a:hover {            text-decoration: none;        }                #pagination span {            margin: 0;            font-weight: bold;            padding: 7px 10px;            border: 1px solid #d9d9d9;            background-color: #f6f6f6;            -webkit-border-radius: 5px;            -moz-border-radius: 5px;            border-radius: 5px;        }                #pagination span.page {            margin-left: 10px;        }                #pagination span.page,        #pagination span.current        {            background-color: #ffffff;        }                #pagination span.disabled {            display: none;        }        #csv {        width: 15%;        float: right;        margin: 0;        margin-top: -9px;        padding: 0;        clear: none;    }            #csv a {            float: right;            margin: 0;            margin-right: 10px;            font-size: 12px;            font-weight: bold;            color: #333333;            text-shadow: #ffffff 1px 1px 0px;             padding: 8px 10px;            text-decoration: none;            -webkit-border-radius: 5px;            -moz-border-radius: 5px;            border-radius: 5px;            border: 1px solid #707070;            background: #f1f1f1;            background: -webkit-gradient(linear, 0 0, 0 bottom, from(#f1f1f1), to(#d2d2d2));            background: -moz-linear-gradient(#f1f1f1, #d2d2d2);            background: linear-gradient(#f1f1f1, #d2d2d2);        }                #csv a:hover {            background: #f1f1f1;            background: -webkit-gradient(linear, 0 0, 0 bottom, from(#f1f1f1), to(#c8c8c8));            background: -moz-linear-gradient(#f1f1f1, #c8c8c8);            background: linear-gradient(#f1f1f1, #c8c8c8);        }        #footer {        margin: 0;        padding: 0;        width: 90%;        padding: 0 5%;        height: 100px;        background: #ffffff;    }            #footer p {            float: left;            margin-top: 35px;            color: #333333;            text-align: left;            font-size: 12px;            line-height: 135%;        }                #footer a {            float: right;            display: block;            width: 128px;            height: 64px;            margin-top: 15px;            text-align: left;            text-indent: -9999px;            background: url(http://www.ideaworks.com.au/shoulder/images/footer.png) no-repeat 0 0;        }                #footer a:hover {            background-position: -128px 0;        }form .submit input[type="submit"] {    margin: 0;    font-size: 14px;    color: #ffffff;    text-shadow: #000000 1px 1px 0px;     padding: 5px 10px;    text-decoration: none;    -webkit-border-radius: 5px;    -moz-border-radius: 5px;    border-radius: 5px;    border: 1px solid #ffffff;    background: #00a1ff;    background: -webkit-gradient(linear, 0 0, 0 bottom, from(#00a1ff), to(#017fe6));    background: -moz-linear-gradient(#00a1ff, #017fe6);    background: linear-gradient(#00a1ff, #017fe6);}form .submit input[type="submit"]:hover {    background: #015eaa;    background: -webkit-gradient(linear, 0 0, 0 bottom, from(#00a1ff), to(#015eaa));    background: -moz-linear-gradient(#00a1ff, #015eaa);    background: linear-gradient(#00a1ff, #015eaa);}table td.actions {    width: 80px;}table td.actions a {    display: block;    width: 22px;    height: 22px;    float: left;    margin: 0;    padding: 0;    font-size: 0;    margin-right: 4px;    text-align: left;    text-indent: -9999px;    border: none;    -webkit-border-radius: 0;    -moz-border-radius: 0;    border-radius: 0;}table td.actions a.view {    background: url(http://www.ideaworks.com.au/shoulder/images/button-view.png) no-repeat 0 0;}table td.actions a.edit {    background: url(http://www.ideaworks.com.au/shoulder/images/button-edit.png) no-repeat 0 0;}table td.actions a.delete {    background: url(http://www.ideaworks.com.au/shoulder/images/button-delete.png) no-repeat 0 0;}table td.actions a:hover {    background-position: 0 -22px;}table tr td,table tr th{    padding: 8px 4px 4px 0;    margin: 0;}table tr th {    font-weight: bold;    color: #0166b9;}table tr th:first-child,table tr td:first-child {    padding-left: 5px;}input, textarea {    padding: 0;}div.error-message {    display: none;    background-color: #ffcccc;    color: #333333;    padding: 10px;}form > div {    padding: 2px 2px 2px 0;    margin-bottom: 2px;}form > a {    padding-right: 7px;    display: block;    background-color: #f4f4f4;    max-width: 800px;    width: 100%;    margin-left: 20px;    height: 1%;    overflow: visible;    min-height: 1%;}form > a:after{  clear: both;  content: ".";  display: block;  height: 0;  visibility: hidden;  font-size: 0;}form > a > img {    margin-left: 30.5%;    padding: 2px 2px 2px 0;}div.input,div.submit{    padding: 2px 2px 2px 5px;    height: 1%;    overflow: visible;    min-height: 1%;    max-width: 800px;    margin-left: 20px;}form > div.input,form > div.submit{    background-color: #f4f4f4;}form > div.submit{    margin: 0;    margin-left: 20px;    padding: 5px;}form > div.submit label,form > div.submit input {    float: right;}div.input:after,div.submit:after{  clear: both;  content: ".";  display: block;  height: 0;  visibility: hidden;  font-size: 0;}div.input.error,div.submit.error{    background-color: #ffcccc;}    div.input > label    {        width: 30%;        float: left;        clear: both;        font-weight: bold;        padding: 10px 0;    }        div.input > input,    div.input > select,    div.input > textarea    {        width: 68%;        float: left;        clear: none;        margin: 5px 0;    }    div.datetime > select {        width: auto;        float: none;    }        div.checkbox > input    {        width: 20px;        float: left;        clear: none;        margin: 10px 0;    }        div.checkbox > label    {        width: 30%;        float: left;        clear: both;        font-weight: none;    }        div.submit > label    {        width: auto;        float: right;        clear: none;        font-weight: bold;        margin-top: 6px;        margin-left: 14px;    }        div.submit > input[type="checkbox"] {        margin: 6px 14px 0 14px;    }        div.submit > input {        /*float: right;*/        clear: none;    }    select#actions {        float: right;        margin-top: 20px;    }    .paging {	padding: 0 20px;}
+/* http://meyerweb.com/eric/tools/css/reset/ 
+   v2.0 | 20110126
+   License: none (public domain)
+*/
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font: inherit;
+    vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+    display: block;
+}
+body {
+    line-height: 1;
+}
+ol, ul {
+    list-style: none;
+}
+blockquote, q {
+    quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+    content: '';
+    content: none;
+}
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+strong {
+    font-weight: bold;
+}
+
+/* float clearing for IE6 */
+* html .clearfix{
+  height: 1%;
+  overflow: visible;
+}
+
+/* float clearing for IE7 */
+*+html .clearfix{
+  min-height: 1%;
+}
+
+/* float clearing for everyone else */
+.clearfix:after{
+  clear: both;
+  content: ".";
+  display: block;
+  height: 0;
+  visibility: hidden;
+  font-size: 0;
+}
+
+/**
+ *
+ * Start styles
+ *
+ */
+
+body{
+    margin:0;
+    color:#595959;
+    font-size: 14px;
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #ffffff;
+}
+
+/*.cake-sql-log {
+    display: none;
+}*/
+
+#container {
+    width: 100%;
+    background: #e8e7e8 url(http://www.ideaworks.com.au/shoulder/images/background.gif) repeat;
+}
+
+    #header {
+        margin: 0;
+        padding: 0;
+        width: 90%;
+        padding: 0 5%;
+        height: 96px;
+        background: #16181d;
+        border-bottom: 1px solid #ffffff;
+        background: #383d4b;
+        /*background: -webkit-gradient(linear, 0 0, 0 bottom, from(#383d4b), to(#191c22));
+        background: -moz-linear-gradient(#383d4b, #191c22);
+        background: linear-gradient(#383d4b, #191c22);*/
+        /*-moz-box-shadow:inset 0 -50px 50px #16181d;
+        -webkit-box-shadow:inset 0 -50px 50px #16181d;
+        box-shadow:inset 0 50px -50px #16181d;*/
+        -webkit-box-shadow: inset 0px -50px 50px 0px #16181d;
+        -moz-box-shadow: inset 0px -50px 50px 0px #16181d;
+        box-shadow: inset 0px -50px 50px 0px #16181d;
+    }
+    
+        #header ul {
+            margin: 0;
+            padding: 0;
+            list-style-type: none;
+        }
+        
+            #header ul#info {
+                margin-top: 25px;
+                float: left;
+                position: relative;
+            }
+            
+                #header ul#info li {
+                    float: left;
+                    clear: both;
+                    margin-left: 65px;
+                    color: #cccccc;
+                }
+                
+                #header ul#info li.image {
+                    position: absolute;
+                    margin-left: 0;
+                }
+                
+                #header ul#info li.name {
+                    font-size: 20px;
+                    color: #ffffff;
+                    font-weight: bold;
+                }
+                
+                #header ul#info li.description {
+                    font-size: 14px;
+                    font-weight: bold;
+                    line-height: 135%;
+                }
+                
+                #header ul#info li.jobcode {
+                    font-size: 12px;
+                }
+            
+            #header ul#menu {
+                float: right;
+            }
+            
+                #header ul#menu li {
+                    float: left;
+                    margin-left: 10px;
+                    margin-top: 45px;
+                }
+            
+                    #header ul#menu li a {
+                        display: block;
+                        background-color: #383d4b;
+                        font-size: 14px;
+                        color: #e6eaeb;
+                        font-weight: bold;
+                        padding: 10px 20px;
+                        -webkit-border-radius: 5px;
+                        -moz-border-radius: 5px;
+                        border-radius: 5px;
+                        text-decoration: none;
+                    }
+                    
+                    #header ul#menu li a:hover {
+                        background-color: #464c5e;
+                    }
+                    
+                    #header ul#menu li.current a {
+                        background-color: #e6eaeb;
+                        color: #333333;
+                    }
+    
+    #content {
+        margin: 0;
+        padding: 0;
+        margin: 0 auto;
+        width: 90%;
+        padding: 0 5%;
+        background: none;
+        overflow: visible;
+    }
+    
+        #content a {
+            color: #0166b9;
+            text-decoration: none;
+        }
+                
+        #content a:hover {
+            color: #0166b9;
+            text-decoration: underline;
+        }
+    
+        #content > .actions  > h3,
+        #content > .actions > ul,
+        #content > .actions > hr
+        {
+            display: none;
+        }
+        
+        #content > .actions > ul.menu {
+            display: block;
+        }
+        
+        #content > .index,
+        #content > .view,
+        #content > .form
+        {
+            margin: 0;
+            padding: 0;
+            padding: 24px 0 30px 0;
+            border: none;
+            float: none;
+            width: 100%;
+        }
+        
+            #content > .index  > h2,
+            #content > .view  > h2,
+            #content > .form  > h2
+            {
+                float: left;
+                margin: 0;
+                padding: 0;
+                display: block;
+                border: none;
+                background: none;
+                width: 50%;
+                font-size: 30px;
+                color: #333333;
+                text-shadow: #ffffff 1px 1px 0px; 
+                padding-bottom: 15px;
+                font-family: 'Times New Roman';
+            }
+            
+            #content > .index  > select,
+            #content > .view  > select,
+            #content > .form  > select
+            {
+                margin: 0;
+                padding: 0;
+                float: right;
+                clear: none;
+                color: #666666;
+                font-size: 14px;
+            }
+            
+            #content > .index  > select option,
+            #content > .view  > select option,
+            #content > .form  > select option
+            {
+                font-size: 14px;
+            }
+            
+            #flashMessage {
+                position: relative;
+                margin: 0;
+                margin-top: 20px;
+                background: #ffffff url(http://www.ideaworks.com.au/shoulder/images/icon-information.png) no-repeat 25px 15px;
+                padding: 30px 30px 30px 80px;
+                font-size: 14px;
+                font-weight: normal;
+                color: #333333;
+                -webkit-border-radius: 15px;
+                -moz-border-radius: 15px;
+                border-radius: 15px;
+                -moz-box-shadow: 0px 0px 5px #ccc;
+                -webkit-box-shadow: 0px 0px 5px #ccc;
+                box-shadow: 0px 0px 5px #ccc;
+            }
+            
+            #flashMessage.error {
+                padding-top: 23px;
+                background: #ffcccc url(http://www.ideaworks.com.au/shoulder/images/icon-error.png) no-repeat 25px 15px;
+            }
+            
+            #flashMessage.success {
+                padding-top: 23px;
+                background: #ffffff url(http://www.ideaworks.com.au/shoulder/images/icon-success.png) no-repeat 25px 15px;
+            }
+            
+            #flashMessage:before {
+                border-color: transparent transparent #ffffff transparent;
+                border-style: solid;
+                border-width: 0 10px 10px 10px;
+                content: "";
+                height: 0;
+                width: 0;
+                position: absolute;
+                top: -10px;
+                left: 48%;
+            }
+            
+            #flashMessage.error:before {
+                border-color: transparent transparent #ffcccc transparent;
+            }
+            
+                #flashMessage span.result {
+                    font-size: 20px;
+                    font-family: 'Times New Roman';
+                }
+        
+            #content > .index > form,
+            #content > .view > form,
+            #content > .form > form
+            {
+                margin: 0;
+                padding: 0;
+                padding: 20px 0 40px 0;
+                width: 100%;
+                background: #ffffff;
+                -webkit-border-radius: 15px;
+                -moz-border-radius: 15px;
+                border-radius: 15px;
+                -moz-box-shadow: 0px 0px 5px #ccc;
+                -webkit-box-shadow: 0px 0px 5px #ccc;
+                box-shadow: 0px 0px 5px #ccc;
+            }
+            
+            #content > .index > form > p {
+                padding: 20px;
+            }
+            
+            /*#content > .view > form > dl {
+                width: 100%;
+            }
+            
+                #content > .view > form > dl > dt {
+                    width: 27.5%;
+                    float: left;
+                    clear: both;
+                    font-weight: bold;
+                    font-size: 13px;
+                    padding: 2% 0 2% 2%;
+                    margin: 0;
+                    margin-left: 0.5%;
+                }
+                
+                #content > .view > form > dl > dd {
+                    width: 67.5%;
+                    float: left;
+                    padding: 2% 2% 2% 0;
+                    margin: 0;
+                    margin-right: 0.5%;
+                }*/
+                
+            #content > .view table,
+            #content > .view table tbody {
+                -webkit-border-radius: 15px;
+                -moz-border-radius: 15px;
+                border-radius: 15px;
+            }
+            
+            #content > .view table tbody tr:first-child td:first-child {
+                -webkit-border-radius: 15px 0 0 0;
+                -moz-border-radius: 15px 0 0 0;
+                border-radius: 15px 0 0 0;
+            }
+            
+            #content > .view table tbody tr:first-child td:last-child {
+                -webkit-border-radius: 0 15px 0 0;
+                -moz-border-radius: 0 15px 0 0;
+                border-radius: 0 15px 0 0;
+            }
+
+            #content > .view table tbody tr:last-child td:first-child {
+                -webkit-border-radius: 0 0 0 15px;
+                -moz-border-radius: 0 0 0 15px;
+                border-radius: 0 0 0 15px;
+            }
+            
+            #content > .view table tbody tr:last-child td:last-child {
+                -webkit-border-radius: 0 0 15px 0;
+                -moz-border-radius: 0 0 15px 0;
+                border-radius: 0 0 15px 0;
+            }
+            
+            #content > .view table tbody tr td {
+                padding: 10px;
+            }            
+            #content > .view table tbody tr td:first-child {
+                font-weight: bold;
+            }
+            
+            #content > .view > form > dl {
+                width: 100%;
+                margin: 0;
+                padding: 0;
+            }
+            
+                #content > .view > form > dl > dt {
+                    float: left;
+                    clear: left;
+                    width: 150px;
+                    margin: 0;
+                    padding: 0;
+                }
+                #content > .view > form > dl > dd {
+                    margin: 0 0 0 160px;
+                    padding: 0 0 0.2em 0;
+                }
+                
+                #content > .related {
+                    margin-bottom: 10px;
+                    padding: 10px 0;
+                }
+                
+                    #content > .related h3 {
+                        float: left;
+                        margin: 0;
+                        padding: 0;
+                        display: block;
+                        border: none;
+                        background: none;
+                        width: 50%;
+                        font-size: 20px;
+                        color: #333333;
+                        text-shadow: #ffffff 1px 1px 0px; 
+                        padding-bottom: 15px;
+                        font-family: 'Times New Roman';
+                    }
+                    
+                    #content > .related table {
+                        -webkit-border-radius: 15px;
+                        -moz-border-radius: 15px;
+                        border-radius: 15px;
+                    }
+                    
+                    #content > .related table tbody tr:last-child td:first-child {
+                        -webkit-border-radius: 0 0 0 15px;
+                        -moz-border-radius: 0 0 0 15px;
+                        border-radius: 0 0 0 15px;
+                    }
+                    
+                    #content > .related table tbody tr:last-child td:last-child {
+                        -webkit-border-radius: 0 0 15px 0;
+                        -moz-border-radius: 0 0 15px 0;
+                        border-radius: 0 0 15px 0;
+                    }
+                
+                    #content > .related div.actions {
+                        margin: 0;
+                        padding: 0;
+                        float: right;
+                    }
+                
+                    #content > .related div.actions a {
+                        float: right;
+                        margin: 0;
+                        margin-bottom: 10px;
+                        font-size: 12px;
+                        font-weight: bold;
+                        color: #333333;
+                        text-shadow: #ffffff 1px 1px 0px; 
+                        padding: 8px 10px;
+                        text-decoration: none;
+                        -webkit-border-radius: 5px;
+                        -moz-border-radius: 5px;
+                        border-radius: 5px;
+                        border: 1px solid #707070;
+                        background: #f1f1f1;
+                        background: -webkit-gradient(linear, 0 0, 0 bottom, from(#f1f1f1), to(#d2d2d2));
+                        background: -moz-linear-gradient(#f1f1f1, #d2d2d2);
+                        background: linear-gradient(#f1f1f1, #d2d2d2);
+                    }
+        
+                    #content > .related div.actions a:hover {
+                        background: #f1f1f1;
+                        background: -webkit-gradient(linear, 0 0, 0 bottom, from(#f1f1f1), to(#c8c8c8));
+                        background: -moz-linear-gradient(#f1f1f1, #c8c8c8);
+                        background: linear-gradient(#f1f1f1, #c8c8c8);
+                    }
+            
+                #content > .index > form > div#filler {
+                    margin: 0;
+                    padding: 0;
+                    margin-top: -20px;
+                    width: 100%;
+                    height: 20px;
+                    background: #e6eaeb;
+                    -webkit-border-radius: 15px 15px 0 0;
+                    -moz-border-radius: 15px 15px 0 0;
+                    border-radius: 15px 15px 0 0;
+                }
+            
+                #content > .index > form > table
+                {
+                    margin: 0;
+                    padding: 0;
+                    width: 100%;
+                    background: none;
+                    color: #333333;
+                    margin-bottom: 10px;
+                }
+                
+                    #content > .index > form > table > thead
+                    {
+                        margin: 0;
+                        padding: 0;
+                        width: 100%;
+                        background: #e6eaeb;
+                    }
+                        #content > .index > form > table > thead > tr.filter {
+                            margin: 0;
+                            padding: 0;
+                        }
+                        
+                            #content > .index > form > table > thead > tr.filter > th {
+                                margin: 0;
+                                padding: 0;
+                                vertical-align: top;
+                            }
+                            
+                                #content > .index > form > table > thead > tr.filter > th > div {
+                                    margin: 0;
+                                    padding: 0;
+                                    padding-right: 10px;
+                                    padding-left: 2px;
+                                    padding-bottom: 10px;
+                                }
+                    
+                    #content > .index > form > table > tbody
+                    {
+                        margin: 0;
+                        padding: 0;
+                        width: 100%;
+                    }
+                    
+                        #content > .index > form > table > tbody > tr.altrow > td {
+                            background: #ffffff;
+                        }
+                        
+                        #content > .index > form > table > tbody > tr.even > td {
+                            background: #f4f4f4;
+                        }
+    
+    #tableOptions {
+        width: 100%;
+        margin-top: 5px;
+    }
+    
+    #pagination {
+        width: 80%;
+        float: left;
+        margin: 0;
+        padding: 0;
+        clear: none;
+    }
+    
+        #pagination a {
+            color: #0166b9;
+        }
+        
+        #pagination a:hover {
+            text-decoration: none;
+        }
+        
+        #pagination span {
+            margin: 0;
+            font-weight: bold;
+            padding: 7px 10px;
+            border: 1px solid #d9d9d9;
+            background-color: #f6f6f6;
+            -webkit-border-radius: 5px;
+            -moz-border-radius: 5px;
+            border-radius: 5px;
+        }
+        
+        #pagination span.page {
+            margin-left: 10px;
+        }
+        
+        #pagination span.page,
+        #pagination span.current
+        {
+            background-color: #ffffff;
+        }
+        
+        #pagination span.disabled {
+            display: none;
+        }
+    
+    #csv {
+        width: 15%;
+        float: right;
+        margin: 0;
+        margin-top: -9px;
+        padding: 0;
+        clear: none;
+    }
+    
+        #csv a {
+            float: right;
+            margin: 0;
+            margin-right: 10px;
+            font-size: 12px;
+            font-weight: bold;
+            color: #333333;
+            text-shadow: #ffffff 1px 1px 0px; 
+            padding: 8px 10px;
+            text-decoration: none;
+            -webkit-border-radius: 5px;
+            -moz-border-radius: 5px;
+            border-radius: 5px;
+            border: 1px solid #707070;
+            background: #f1f1f1;
+            background: -webkit-gradient(linear, 0 0, 0 bottom, from(#f1f1f1), to(#d2d2d2));
+            background: -moz-linear-gradient(#f1f1f1, #d2d2d2);
+            background: linear-gradient(#f1f1f1, #d2d2d2);
+        }
+        
+        #csv a:hover {
+            background: #f1f1f1;
+            background: -webkit-gradient(linear, 0 0, 0 bottom, from(#f1f1f1), to(#c8c8c8));
+            background: -moz-linear-gradient(#f1f1f1, #c8c8c8);
+            background: linear-gradient(#f1f1f1, #c8c8c8);
+        }
+    
+    #footer {
+        margin: 0;
+        padding: 0;
+        width: 90%;
+        padding: 0 5%;
+        height: 100px;
+        background: #ffffff;
+    }
+    
+        #footer p {
+            float: left;
+            margin-top: 35px;
+            color: #333333;
+            text-align: left;
+            font-size: 12px;
+            line-height: 135%;
+        }
+        
+        #footer a {
+            float: right;
+            display: block;
+            width: 128px;
+            height: 64px;
+            margin-top: 15px;
+            text-align: left;
+            text-indent: -9999px;
+            background: url(http://www.ideaworks.com.au/shoulder/images/footer.png) no-repeat 0 0;
+        }
+        
+        #footer a:hover {
+            background-position: -128px 0;
+        }
+
+form .submit input[type="submit"] {
+    margin: 0;
+    font-size: 14px;
+    color: #ffffff;
+    text-shadow: #000000 1px 1px 0px; 
+    padding: 5px 10px;
+    text-decoration: none;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    border: 1px solid #ffffff;
+    background: #00a1ff;
+    background: -webkit-gradient(linear, 0 0, 0 bottom, from(#00a1ff), to(#017fe6));
+    background: -moz-linear-gradient(#00a1ff, #017fe6);
+    background: linear-gradient(#00a1ff, #017fe6);
+}
+
+form .submit input[type="submit"]:hover {
+    background: #015eaa;
+    background: -webkit-gradient(linear, 0 0, 0 bottom, from(#00a1ff), to(#015eaa));
+    background: -moz-linear-gradient(#00a1ff, #015eaa);
+    background: linear-gradient(#00a1ff, #015eaa);
+}
+
+table td.actions {
+    width: 80px;
+}
+
+table td.actions a {
+    display: block;
+    width: 22px;
+    height: 22px;
+    float: left;
+    margin: 0;
+    padding: 0;
+    font-size: 0;
+    margin-right: 4px;
+    text-align: left;
+    text-indent: -9999px;
+    border: none;
+    -webkit-border-radius: 0;
+    -moz-border-radius: 0;
+    border-radius: 0;
+}
+
+table td.actions a.view {
+    background: url(http://www.ideaworks.com.au/shoulder/images/button-view.png) no-repeat 0 0;
+}
+table td.actions a.edit {
+    background: url(http://www.ideaworks.com.au/shoulder/images/button-edit.png) no-repeat 0 0;
+}
+table td.actions a.delete {
+    background: url(http://www.ideaworks.com.au/shoulder/images/button-delete.png) no-repeat 0 0;
+}
+
+table td.actions a:hover {
+    background-position: 0 -22px;
+}
+
+table tr td,
+table tr th
+{
+    padding: 8px 4px 4px 0;
+    margin: 0;
+}
+
+table tr th {
+    font-weight: bold;
+    color: #0166b9;
+}
+
+table tr th:first-child,
+table tr td:first-child
+ {
+    padding-left: 5px;
+}
+
+input, textarea {
+    padding: 0;
+}
+
+div.error-message {
+    display: none;
+    background-color: #ffcccc;
+    color: #333333;
+    padding: 10px;
+}
+
+form > div {
+    padding: 2px 2px 2px 0;
+    margin-bottom: 2px;
+}
+
+form > a {
+    padding-right: 7px;
+    display: block;
+    background-color: #f4f4f4;
+    max-width: 800px;
+    width: 100%;
+    margin-left: 20px;
+    height: 1%;
+    overflow: visible;
+    min-height: 1%;
+}
+
+form > a:after
+{
+  clear: both;
+  content: ".";
+  display: block;
+  height: 0;
+  visibility: hidden;
+  font-size: 0;
+}
+
+form > a > img {
+    margin-left: 30.5%;
+    padding: 2px 2px 2px 0;
+}
+
+div.input,
+div.submit
+{
+    padding: 2px 2px 2px 5px;
+    height: 1%;
+    overflow: visible;
+    min-height: 1%;
+    max-width: 800px;
+    margin-left: 20px;
+}
+
+form > div.input,
+form > div.submit
+{
+    background-color: #f4f4f4;
+}
+
+form > div.submit
+{
+    margin: 0;
+    margin-left: 20px;
+    padding: 5px;
+}
+
+form > div.submit label,
+form > div.submit input {
+    float: right;
+}
+
+div.input:after,
+div.submit:after
+{
+  clear: both;
+  content: ".";
+  display: block;
+  height: 0;
+  visibility: hidden;
+  font-size: 0;
+}
+
+div.input.error,
+div.submit.error
+{
+    background-color: #ffcccc;
+}
+
+    div.input > label
+    {
+        width: 30%;
+        float: left;
+        clear: both;
+        font-weight: bold;
+        padding: 10px 0;
+    }
+    
+    div.input > input,
+    div.input > select,
+    div.input > textarea
+    {
+        width: 68%;
+        float: left;
+        clear: none;
+        margin: 5px 0;
+    }
+
+    div.datetime > select {
+        width: auto;
+        float: none;
+    }
+    
+    div.checkbox > input
+    {
+        width: 20px;
+        float: left;
+        clear: none;
+        margin: 10px 0;
+    }
+    
+    div.checkbox > label
+    {
+        width: 30%;
+        float: left;
+        clear: both;
+        font-weight: none;
+    }
+    
+    div.submit > label
+    {
+        width: auto;
+        float: right;
+        clear: none;
+        font-weight: bold;
+        margin-top: 6px;
+        margin-left: 14px;
+    }
+    
+    div.submit > input[type="checkbox"] {
+        margin: 6px 14px 0 14px;
+    }
+    
+    div.submit > input {
+        /*float: right;*/
+        clear: none;
+    }
+
+    select#actions {
+        float: right;
+        margin-top: 20px;
+    }
+    
+.paging {
+	padding: 0 20px;
+}
