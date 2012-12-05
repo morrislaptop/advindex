@@ -61,6 +61,7 @@ if(empty($this->plugin)){
             ?>
             <ul id="menu">
                 <?php
+                	$scaffold = Configure::read('scaffold');
                     $controllers = App::objects('controller');
                     $links = array();
                     foreach ($controllers as $c)
@@ -98,9 +99,6 @@ if(empty($this->plugin)){
                     if($this->params['plugin'] == 'settings'){
                         $class = ' class="current"';
                     }
-                    $links[] = '<li'.$class.'>'.$this->Html->link('Settings', array('plugin' => 'settings', 'controller' => 'configs', 'action' => 'index')).'</li>';
-                    $links[] = '<li'.$class.'>'.$this->Html->link('Routes', array('plugin' => 'settings', 'controller' => 'routes', 'action' => 'index')).'</li>';
-                    $links[] = '<li'.$class.'>'.$this->Html->link('Translations', array('plugin' => 'settings', 'controller' => 'translations', 'action' => 'index')).'</li>';
                     echo implode('', $links);
                 ?>
             </ul>
