@@ -207,7 +207,7 @@ class AdvindexComponent extends Object {
 		$modelName = $this->modelName;
 		$callbacks = false;
 		$fields = array_keys($this->settings['fields']);
-		$recursive = -1;
+		#$recursive = -1;
 
 		$order = null;
 		if ( !empty($this->controller->passedArgs['sort']) ) {
