@@ -13,7 +13,7 @@ class AdvindexHelper extends FormHelper {
 	var $AdvformHelper;
     var $pluginFolder;
 
-	function create($model) {
+	function create($model = null, $options = array()) {
 		// we have to set the url manually as the id in the form data causes Router errors.
 		return parent::create($model, array('url' => array('action' => 'index')));
 	}
