@@ -47,7 +47,7 @@ if(empty($this->plugin)){
                     if(!empty($config['fb_id'])){
                         $image = '<a href="https://www.facebook.com/'.$config['fb_id'].'" target="_blank"><img src="https://graph.facebook.com/'.$config['fb_id'].'/picture" /></a>';
                     }else{
-                        $image = '<a href="http://www.ideaworks.com.au" target="_blank"><img src="'.$config['fb_id'].'" /></a>';
+                        $image = '<a href="http://www.ideaworks.com.au" target="_blank"><img src="'.$config['image'].'" /></a>';
                     }
                     ?>
                     <ul id="info">
