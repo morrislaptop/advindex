@@ -1,6 +1,8 @@
 {
     "name": "morrislaptop/advindex",
+    "type": "cakephp-plugin",
     "require": {
-        "php": ">=5.3.0"
+        "php": ">=5.3.0",
+        "composer/installers": "*",
     }
 }
